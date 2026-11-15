@@ -35,6 +35,7 @@ user_pref("halo.devtools.ui-font-family", "");             // UI font family
 user_pref("halo.devtools.mono-font-family", "");           // Code font family
 user_pref("halo.devtools.js.tab-indicator", true);         // Sliding tab indicator
 user_pref("halo.devtools.js.ripple", true);                // Click ripple
+user_pref("halo.devtools.js.tab-scrollbar", true);         // Slim sidebar-tab scrollbar
 user_pref("halo.devtools.js.console-copy", true);          // Console copy button
 user_pref("halo.devtools.js.toasts", true);                // Pref toasts
 user_pref("halo.devtools.js.hotkeys", true);               // Hotkeys

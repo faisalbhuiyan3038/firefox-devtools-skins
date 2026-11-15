@@ -50,6 +50,37 @@
     to { transform: scale(1); opacity: 0; }
   }
 
+  /* Slim sidebar-tab scrollbar (halo.devtools.js.tab-scrollbar).
+     The native bar is hidden only while the JS overlay is running, so the
+     strip stays scrollable if JS mods are off. */
+  :root[halo-tab-scroll] .tabs .tabs-navigation,
+  :root[halo-tab-scroll] .tabs .tabs-menu {
+    scrollbar-width: none !important;
+  }
+  .halo-hscroll {
+    position: fixed;
+    z-index: 2147483640;
+    display: none;
+    height: 6px;
+  }
+  .halo-hscroll[halo-visible] {
+    display: block;
+  }
+  .halo-hscroll-thumb {
+    position: absolute;
+    left: 0;
+    bottom: 1px;
+    height: 3px;
+    border-radius: 3px;
+    background: color-mix(in oklab, var(--halo-text-dim, #888) 55%, transparent);
+    transition: height 120ms ease, background-color 120ms ease;
+  }
+  .halo-hscroll:hover .halo-hscroll-thumb,
+  .halo-hscroll[halo-dragging] .halo-hscroll-thumb {
+    height: 5px;
+    background: var(--halo-text-dim, #888);
+  }
+
   /* Console copy button (halo.devtools.js.console-copy) */
   .halo-copy-btn {
     position: fixed;

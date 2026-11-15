@@ -204,12 +204,31 @@
     background: var(--halo-bg-1) !important;
     border-bottom-color: var(--halo-border) !important;
   }
-  .tabs .tabs-menu-item {
-    margin-block: 4px !important;
-    border-radius: 7px !important;
-  }
+  /* The pill is a pseudo-element inset inside the full-height item, so the
+     label stays vertically centred (a margin on the item shifts it instead). */
+  .tabs .tabs-menu-item,
+  .tabs .tabs-menu-item:hover:not(.is-active),
   .tabs .tabs-menu-item.is-active {
-    background: light-dark(#f0f3fa, #232937) !important;
+    margin-block: 0 !important;
+    position: relative;
+    isolation: isolate;
+    border-radius: 7px !important;   /* read by the JS click ripple */
+    background: transparent !important;
+  }
+  .tabs .tabs-menu-item::before {
+    content: "";
+    position: absolute;
+    inset: 4px 2px;
+    border-radius: 7px;
+    background: transparent;
+    z-index: -1;
+    pointer-events: none;
+  }
+  .tabs .tabs-menu-item:hover:not(.is-active)::before {
+    background: var(--halo-surface);
+  }
+  .tabs .tabs-menu-item.is-active::before {
+    background: light-dark(#f0f3fa, #232937);
   }
   .tabs .tabs-menu-item.is-active a {
     font-weight: 600;

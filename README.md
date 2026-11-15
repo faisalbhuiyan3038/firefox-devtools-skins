@@ -83,6 +83,7 @@ These apply to every preset. Turning one off returns that area to stock Firefox 
 | `halo.devtools.ui-font-family` / `mono-font-family` | string | `""` | Override the preset's fonts, e.g. `Inter` or `"JetBrains Mono"` |
 | `halo.devtools.js.tab-indicator` | bool | `true` | The selected-tab shape slides between tabs. Each preset restyles it: a pill, a frosted segment, an editor tab or a phosphor block |
 | `halo.devtools.js.ripple` | bool | `true` | Accent ripple on clicks |
+| `halo.devtools.js.tab-scrollbar` | bool | `true` | 3px draggable scrollbar on sidebar tab strips (Layout, Computed…); mouse wheel scrolls them sideways |
 | `halo.devtools.js.console-copy` | bool | `true` | Hover a console message to get a **Copy** button |
 | `halo.devtools.js.toasts` | bool | `true` | A small toast confirms each `halo.devtools.*` change |
 | `halo.devtools.js.hotkeys` | bool | `true` | The hotkeys listed below |

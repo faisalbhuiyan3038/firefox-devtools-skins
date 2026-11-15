@@ -46,6 +46,7 @@ const PREFS = {
   "mono-font-family": ["",    "Code font family"],
   "js.tab-indicator": [true,  "Sliding tab indicator"],
   "js.ripple":        [true,  "Click ripple"],
+  "js.tab-scrollbar": [true,  "Slim sidebar-tab scrollbar"],
   "js.console-copy":  [true,  "Console copy button"],
   "js.toasts":        [true,  "Pref toasts"],
   "js.hotkeys":       [true,  "Hotkeys"],
@@ -232,6 +233,145 @@ FEATURES.ripple = {
     return () => {
       win.removeEventListener("pointerdown", onDown, true);
       for (const h of doc.querySelectorAll(".halo-ripple-host")) h.remove();
+    };
+  },
+};
+
+/* Sidebar tab strips (Inspector Layout/Computed/Changes…, Netmonitor details)
+ * scroll sideways. Firefox can't draw a scrollbar thinner than `thin`, so the
+ * native one is hidden (via :root[halo-tab-scroll] in mods.css) and replaced by
+ * a 3px overlay bar that can be dragged or clicked; the plain mouse wheel also
+ * scrolls the strip sideways. */
+FEATURES.tabScroll = {
+  pref: "js.tab-scrollbar",
+  applies: () => true,
+  start({ doc, win }) {
+    const root = doc.documentElement;
+    root.setAttribute("halo-tab-scroll", "");
+    const strips = new Map(); // .tabs-navigation → { bar, thumb, scroller, geo }
+    let raf = 0;
+
+    // The element that actually overflows (stock CSS has varied between versions).
+    const scrollerOf = nav => {
+      for (const n of [nav.querySelector(":scope > .tabs-menu"), nav]) {
+        if (n && n.scrollWidth > n.clientWidth + 1) return n;
+      }
+      return null;
+    };
+
+    const update = () => {
+      raf = 0;
+      const navs = new Set(doc.querySelectorAll(".tabs .tabs-navigation"));
+      for (const [nav, s] of strips) {
+        if (!navs.has(nav) || !nav.isConnected) {
+          s.bar.remove();
+          strips.delete(nav);
+        }
+      }
+      for (const nav of navs) {
+        let s = strips.get(nav);
+        if (!s) {
+          const bar = el(doc, "div", "halo-hscroll");
+          const thumb = el(doc, "div", "halo-hscroll-thumb");
+          bar.appendChild(thumb);
+          root.appendChild(bar);
+          s = { bar, thumb, scroller: null, geo: null };
+          bindDrag(s);
+          strips.set(nav, s);
+          ro.observe(nav);
+        }
+        const sc = scrollerOf(nav);
+        const nr = nav.getBoundingClientRect();
+        s.scroller = sc;
+        if (!sc || !nr.width || !nr.height) {
+          s.bar.removeAttribute("halo-visible");
+          s.geo = null;
+          continue;
+        }
+        const r = sc.getBoundingClientRect();
+        const max = sc.scrollWidth - sc.clientWidth;
+        const thumbW = Math.max(24, r.width * (sc.clientWidth / sc.scrollWidth));
+        const travel = Math.max(1, r.width - thumbW);
+        s.geo = { max, travel, thumbW, left: r.left };
+        Object.assign(s.bar.style, {
+          left: `${r.left}px`, width: `${r.width}px`, top: `${nr.bottom - 6}px`,
+        });
+        Object.assign(s.thumb.style, {
+          width: `${thumbW}px`,
+          transform: `translateX(${(Math.abs(sc.scrollLeft) / max) * travel}px)`,
+        });
+        s.bar.setAttribute("halo-visible", "");
+      }
+    };
+    const schedule = () => { raf ||= win.requestAnimationFrame(update); };
+
+    function bindDrag(s) {
+      let startX = 0, startScroll = 0, dragging = false;
+      s.bar.addEventListener("pointerdown", e => {
+        const { scroller: sc, geo } = s;
+        if (e.button !== 0 || !sc || !geo) return;
+        e.preventDefault();
+        e.stopPropagation();
+        if (e.target !== s.thumb) {
+          // Click on the track: centre the thumb under the pointer.
+          const x = e.clientX - geo.left - geo.thumbW / 2;
+          sc.scrollLeft = Math.min(1, Math.max(0, x / geo.travel)) * geo.max;
+        }
+        dragging = true;
+        startX = e.clientX;
+        startScroll = sc.scrollLeft;
+        s.bar.setPointerCapture(e.pointerId);
+        s.bar.setAttribute("halo-dragging", "");
+      });
+      s.bar.addEventListener("pointermove", e => {
+        if (!dragging || !s.scroller || !s.geo) return;
+        s.scroller.scrollLeft = startScroll + (e.clientX - startX) * (s.geo.max / s.geo.travel);
+      });
+      const end = () => {
+        dragging = false;
+        s.bar.removeAttribute("halo-dragging");
+      };
+      s.bar.addEventListener("pointerup", end);
+      s.bar.addEventListener("pointercancel", end);
+    }
+
+    // Vertical wheel over a strip (or its bar) scrolls it sideways.
+    const onWheel = e => {
+      if (e.ctrlKey) return;
+      const t = e.target;
+      let s = null;
+      for (const [nav, entry] of strips) {
+        if (nav.contains(t) || entry.bar.contains(t)) { s = entry; break; }
+      }
+      const sc = s?.scroller;
+      if (!sc || !s.geo) return;
+      const unit = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? sc.clientWidth : 1;
+      const d = (Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY) * unit;
+      if (!d) return;
+      e.preventDefault();
+      sc.scrollLeft += d;
+    };
+
+    const mo = new win.MutationObserver(schedule);
+    mo.observe(root, { subtree: true, childList: true });
+    const ro = new win.ResizeObserver(schedule);
+    ro.observe(root);
+    win.addEventListener("resize", schedule);
+    doc.addEventListener("scroll", schedule, true);
+    doc.addEventListener("wheel", onWheel, { capture: true, passive: false });
+    doc.fonts?.ready.then(schedule);
+    schedule();
+
+    return () => {
+      mo.disconnect();
+      ro.disconnect();
+      win.removeEventListener("resize", schedule);
+      doc.removeEventListener("scroll", schedule, true);
+      doc.removeEventListener("wheel", onWheel, { capture: true });
+      if (raf) win.cancelAnimationFrame(raf);
+      for (const s of strips.values()) s.bar.remove();
+      strips.clear();
+      root.removeAttribute("halo-tab-scroll");
     };
   },
 };
