@@ -1,0 +1,4 @@
+/* Halo DevTools — entry point.
+ * Copy (or merge) this line into <profile>/chrome/userContent.css.
+ * Every module is gated by an about:config pref; see README.md. */
+@import url("halo/halo.css") (-moz-pref("halo.devtools.enabled"));

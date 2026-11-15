@@ -1,0 +1,23 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   HALO DEVTOOLS — module index
+   Each module is switched on/off by a boolean pref in about:config.
+   Prefs are evaluated live: flipping one restyles open toolboxes instantly.
+   Every module file is scoped with @-moz-document to devtools URLs only,
+   so nothing here leaks into web pages.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+@import url("modules/tokens.css");                                        /* always: design tokens + @font-face */
+@import url("modules/palette.css")    (-moz-pref("halo.devtools.palette"));
+@import url("modules/font.css")       (-moz-pref("halo.devtools.font"));
+@import url("modules/mono.css")       (-moz-pref("halo.devtools.mono-font"));
+@import url("modules/tabs.css")       (-moz-pref("halo.devtools.tabs"));
+@import url("modules/toolbars.css")   (-moz-pref("halo.devtools.toolbars"));
+@import url("modules/console.css")    (-moz-pref("halo.devtools.console"));
+@import url("modules/inspector.css")  (-moz-pref("halo.devtools.inspector"));
+@import url("modules/debugger.css")   (-moz-pref("halo.devtools.debugger"));
+@import url("modules/netmonitor.css") (-moz-pref("halo.devtools.netmonitor"));
+@import url("modules/scrollbars.css") (-moz-pref("halo.devtools.scrollbars"));
+@import url("modules/motion.css")     (-moz-pref("halo.devtools.motion"));
+@import url("modules/glow.css")       (-moz-pref("halo.devtools.glow"));
+@import url("modules/compact.css")    (-moz-pref("halo.devtools.compact"));
+@import url("modules/mods.css");                                          /* always: styles for JS-injected UI */

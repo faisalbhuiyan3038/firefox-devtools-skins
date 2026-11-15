@@ -1,0 +1,29 @@
+/* Halo — UI typeface: Geist (pref: halo.devtools.font)
+   Size comes from halo.devtools.ui-font-size via the JS module (default 12px). */
+@-moz-document url-prefix("chrome://devtools/"), url-prefix("about:devtools") {
+
+  :root {
+    --theme-body-font-size: var(--halo-ui-font-size, 12px) !important;
+    font-family: var(--halo-font-ui) !important;
+    font-optical-sizing: auto;
+  }
+
+  :root, body, .theme-body, .devtools-tab, button, select, input:not(.devtools-monospace),
+  .devtools-toolbar, .tabs, .tabs-menu-item, .accordion, .tree, .tooltip-panel, menu, menuitem,
+  .devtools-sidebar-tabs, .sidebar-toggle, .requests-list-header, .requests-list-header-button,
+  .theme-tooltip-panel {
+    font-family: var(--halo-font-ui) !important;
+  }
+
+  /* Geist reads best a hair heavier at small sizes */
+  .devtools-tab-label, .tabs-menu-item a, .requests-list-header-button,
+  .accordion ._header, ._header, .devtools-toolbar {
+    letter-spacing: 0.005em;
+    font-weight: 450;
+  }
+
+  .devtools-tab.selected .devtools-tab-label,
+  .tabs-menu-item.is-active a {
+    font-weight: 550;
+  }
+}

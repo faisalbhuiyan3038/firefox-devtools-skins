@@ -1,0 +1,114 @@
+/* Halo — Debugger & Style Editor code editors (pref: halo.devtools.debugger) */
+@-moz-document url-prefix("chrome://devtools/content/debugger/"), url-prefix("chrome://devtools/content/styleeditor/"), url-prefix("chrome://devtools/content/framework/") {
+
+  /* CodeMirror 6 */
+  .cm-editor {
+    background: var(--halo-bg-1) !important;
+  }
+  .cm-gutters {
+    background: var(--halo-bg-1) !important;
+    border-inline-end: 1px solid var(--halo-border) !important;
+    color: var(--halo-text-dim) !important;
+  }
+  .cm-lineNumbers .cm-gutterElement {
+    padding-inline: 10px 8px !important;
+  }
+  .cm-activeLine {
+    background-color: color-mix(in oklab, var(--halo-surface) 60%, transparent) !important;
+  }
+  .cm-activeLineGutter {
+    background-color: transparent !important;
+    color: var(--halo-text-strong) !important;
+  }
+  .cm-cursor, .cm-dropCursor {
+    border-left: 2px solid var(--halo-accent) !important;
+  }
+  .cm-focused .cm-selectionBackground, .cm-selectionBackground,
+  .cm-content ::selection {
+    background-color: color-mix(in oklab, var(--halo-accent) 26%, transparent) !important;
+  }
+  .cm-matchingBracket {
+    background: var(--halo-accent-soft) !important;
+    outline: 1px solid var(--halo-accent-line);
+    border-radius: 2px;
+  }
+  .cm-searchMatch {
+    background: color-mix(in oklab, var(--halo-amber) 30%, transparent) !important;
+    border-radius: 2px;
+  }
+
+  /* Legacy CodeMirror 5 (Style Editor, some popups) */
+  .CodeMirror {
+    background: var(--halo-bg-1) !important;
+  }
+  .CodeMirror-gutters {
+    background: var(--halo-bg-1) !important;
+    border-inline-end: 1px solid var(--halo-border) !important;
+  }
+  .CodeMirror-linenumber {
+    color: var(--halo-text-dim) !important;
+  }
+  .CodeMirror-cursor {
+    border-left: 2px solid var(--halo-accent) !important;
+  }
+  .CodeMirror-selected, .CodeMirror-focused .CodeMirror-selected {
+    background: color-mix(in oklab, var(--halo-accent) 26%, transparent) !important;
+  }
+
+  /* Paused line / breakpoints */
+  .paused-line, .new-debug-line, .cm-editor .paused-line {
+    background-color: color-mix(in oklab, var(--halo-green) 16%, transparent) !important;
+    outline: 1px solid color-mix(in oklab, var(--halo-green) 35%, transparent);
+  }
+  .new-breakpoint .cm-gutterElement, .breakpoint-marker, .new-breakpoint svg {
+    --breakpoint-fill: var(--halo-accent) !important;
+    --breakpoint-stroke: var(--halo-accent) !important;
+  }
+
+  /* Source tree & editor tabs */
+  .sources-list .tree .node.focused, .sources-panel .tree-node.focused {
+    background: var(--halo-accent-soft) !important;
+    color: var(--halo-text-strong) !important;
+  }
+  .source-tab {
+    border-radius: var(--halo-radius-sm) var(--halo-radius-sm) 0 0;
+  }
+  .source-tab.active {
+    background-color: var(--halo-bg-1) !important;
+    color: var(--halo-text-strong) !important;
+    box-shadow: inset 0 2px 0 var(--halo-accent) !important;
+  }
+  .source-tab:not(.active):hover {
+    background-color: var(--halo-surface) !important;
+  }
+  .source-footer {
+    background: var(--halo-bg-2) !important;
+    border-top-color: var(--halo-border) !important;
+  }
+
+  /* Secondary panes */
+  .secondary-panes, .secondary-panes-wrapper {
+    background: var(--halo-bg-2) !important;
+  }
+  .frames [role="listitem"].selected, .frames .frame.selected {
+    background-color: var(--halo-accent-soft) !important;
+    color: var(--halo-text-strong) !important;
+    box-shadow: inset 2px 0 0 var(--halo-accent);
+  }
+  .welcomebox {
+    background: var(--halo-bg-1) !important;
+  }
+  .welcomebox .shortcutKey {
+    font-family: var(--halo-font-mono) !important;
+    color: var(--halo-accent-text) !important;
+  }
+
+  /* Style Editor list */
+  .splitview-nav > li.splitview-active {
+    background-color: var(--halo-accent-soft) !important;
+    box-shadow: inset 2px 0 0 var(--halo-accent);
+  }
+  .splitview-nav > li.splitview-active, .splitview-nav > li.splitview-active * {
+    color: var(--halo-text-strong) !important;
+  }
+}

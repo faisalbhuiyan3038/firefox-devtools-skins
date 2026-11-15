@@ -1,0 +1,19 @@
+/* Halo — code typeface: Geist Mono (pref: halo.devtools.mono-font)
+   Size comes from halo.devtools.code-font-size via the JS module (default 12px). */
+@-moz-document url-prefix("chrome://devtools/"), url-prefix("about:devtools") {
+
+  :root, :root[platform] {
+    --monospace-font-family: var(--halo-font-mono) !important;
+    --theme-code-font-size: var(--halo-code-font-size, 12px) !important;
+    --theme-code-line-height: 1.55 !important;
+  }
+
+  .devtools-monospace, .cm-editor, .cm-scroller, .cm-content, .cm-gutters,
+  .CodeMirror, .CodeMirror pre, .message, .message-body, .jsterm-input-container,
+  .objectBox, .tree .treeLabel, .ruleview-rule, .ruleview-code,
+  .computed-property-view, #markup-box, .tag-line, .editor,
+  .requests-list-column, .requests-list-url, .source-footer, .frames .location,
+  .scopes-list .tree, .tooltip-container pre {
+    font-family: var(--halo-font-mono) !important;
+  }
+}

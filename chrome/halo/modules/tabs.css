@@ -1,0 +1,133 @@
+/* Halo — toolbox & sidebar tabs (pref: halo.devtools.tabs)
+   Floating pill tabs on a recessed strip. With the JS tab indicator on,
+   a single pill slides between tabs instead. */
+@-moz-document url-prefix("chrome://devtools/"), url-prefix("about:devtools") {
+
+  .devtools-tabbar {
+    background: var(--theme-tab-toolbar-background) !important;
+    border-bottom: 1px solid var(--theme-splitter-color) !important;
+    padding-inline: 4px !important;
+    min-height: 35px !important;
+  }
+
+  #toolbox-buttons-start, #toolbox-buttons-end, #toolbox-controls {
+    align-items: center !important;
+  }
+
+  .toolbox-tabs {
+    gap: 2px;
+    align-items: center;
+    padding-block: 4px;
+  }
+
+  .devtools-tab {
+    min-height: 26px !important;
+    border-radius: var(--halo-radius) !important;
+    padding-inline: 10px 12px !important;
+    margin: 0 !important;
+    color: var(--halo-text-muted) !important;
+    background: transparent;
+  }
+
+  .devtools-tab > img {
+    opacity: 0.7;
+  }
+
+  .devtools-tab:not(.selected):hover {
+    background-color: color-mix(in oklab, var(--halo-surface) 80%, transparent) !important;
+    color: var(--halo-text-strong) !important;
+  }
+
+  .devtools-tab:not(.selected):hover > img,
+  .devtools-tab.selected > img {
+    opacity: 1;
+  }
+
+  .devtools-tab.selected {
+    color: var(--halo-text-strong) !important;
+    background-color: var(--halo-surface-2) !important;
+    box-shadow: inset 0 0 0 1px var(--halo-border-strong), 0 1px 2px rgb(0 0 0 / 0.18);
+  }
+
+  .devtools-tab.selected > img {
+    fill: var(--halo-accent-text) !important;
+  }
+
+  /* The stock 2px top line becomes a short accent bar under the label */
+  .devtools-tab .devtools-tab-line {
+    top: auto !important;
+    bottom: 2px !important;
+    inset-inline: 30% !important;
+    width: auto !important;
+    height: 2px !important;
+    border-radius: 2px;
+  }
+  .devtools-tab.selected .devtools-tab-line {
+    background: var(--halo-accent) !important;
+  }
+  .devtools-tab:not(.selected) .devtools-tab-line {
+    opacity: 0 !important;
+  }
+
+  /* JS sliding indicator replaces per-tab backgrounds */
+  :root[halo-tab-indicator] .devtools-tab.selected,
+  :root[halo-tab-indicator] .devtools-tab.selected:hover {
+    background-color: transparent !important;
+    box-shadow: none !important;
+  }
+  :root[halo-tab-indicator] .devtools-tab .devtools-tab-line {
+    display: none !important;
+  }
+  :root[halo-tab-indicator] .devtools-tab {
+    position: relative;
+    z-index: 1;
+  }
+
+  .devtools-tab .devtools-tab-badge {
+    background: var(--halo-red) !important;
+    color: white !important;
+    border-radius: 999px !important;
+    padding-inline: 5px !important;
+    font-weight: 600;
+  }
+
+  /* Command buttons on the tab strip */
+  .devtools-tabbar-button {
+    border-radius: var(--halo-radius-sm) !important;
+    margin-inline: 1px !important;
+  }
+  .devtools-tabbar-button:hover:not(:disabled) {
+    background-color: var(--halo-surface) !important;
+  }
+  .devtools-tabbar-button.checked {
+    background-color: var(--halo-accent-soft) !important;
+  }
+  .devtools-tabbar-button.checked::before {
+    fill: var(--halo-accent-text) !important;
+  }
+
+  /* Sidebar tabs (Inspector rules/layout/computed, Netmonitor details…) */
+  .tabs .tabs-navigation {
+    background: var(--theme-toolbar-background) !important;
+    border-bottom-color: var(--theme-splitter-color) !important;
+  }
+  .tabs .tabs-menu-item:hover:not(.is-active) {
+    background: var(--halo-surface) !important;
+  }
+  .tabs .tabs-menu-item.is-active {
+    background: transparent !important;
+  }
+  .tabs .tabs-menu-item.is-active a {
+    color: var(--halo-text-strong) !important;
+  }
+  .tabs .tabs-menu-item .devtools-tab-line {
+    top: auto !important;
+    bottom: 0 !important;
+    inset-inline: 8px !important;
+    width: auto !important;
+    border-radius: 2px 2px 0 0;
+  }
+  .tabs .tabs-menu-item.is-active .devtools-tab-line {
+    background: var(--halo-accent) !important;
+  }
+}

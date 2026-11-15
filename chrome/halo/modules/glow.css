@@ -1,0 +1,25 @@
+/* Halo — accent glow (pref: halo.devtools.glow)
+   A faint accent wash at the top of the tab strip and soft halos on focus. */
+@-moz-document url-prefix("chrome://devtools/"), url-prefix("about:devtools") {
+
+  .devtools-tabbar {
+    background-image:
+      radial-gradient(120% 140% at 0% 0%, color-mix(in oklab, var(--halo-accent) 9%, transparent), transparent 55%) !important;
+  }
+
+  .devtools-searchinput:focus, .devtools-filterinput:focus, .devtools-textinput:focus,
+  .devtools-searchbox input:focus, .search-field input:focus {
+    box-shadow: 0 0 0 3px var(--halo-accent-softer) !important;
+  }
+
+  .devtools-tab.selected > img {
+    filter: drop-shadow(0 0 4px color-mix(in oklab, var(--halo-accent) 55%, transparent));
+  }
+
+  .halo-tab-indicator {
+    box-shadow:
+      inset 0 0 0 1px var(--halo-border-strong),
+      0 1px 2px rgb(0 0 0 / 0.2),
+      0 6px 18px -8px color-mix(in oklab, var(--halo-accent) 60%, transparent) !important;
+  }
+}

@@ -1,0 +1,66 @@
+/* Halo — micro-interactions (pref: halo.devtools.motion)
+   Short, eased transitions; panel switch fade; popups scale in.
+   (No per-row animations: console/network rows are virtualized and would
+   re-animate on every scroll.)
+   Respects prefers-reduced-motion. */
+@-moz-document url-prefix("chrome://devtools/"), url-prefix("about:devtools") {
+
+  @media not (prefers-reduced-motion: reduce) {
+
+    .devtools-tab, .devtools-tabbar-button, .devtools-button, .devtools-togglebutton,
+    .tabs-menu-item, .tabs-menu-item a, .request-list-item, .source-tab,
+    .accordion ._header, .breadcrumbs-widget-item, .ruleview-rule, .inspector-badge,
+    .devtools-searchinput, .devtools-filterinput, .devtools-textinput,
+    .devtools-searchbox input, .search-field input, .tag-line .tag-state {
+      transition:
+        background-color var(--halo-dur) var(--halo-ease),
+        color var(--halo-dur) var(--halo-ease),
+        border-color var(--halo-dur) var(--halo-ease),
+        box-shadow var(--halo-dur) var(--halo-ease),
+        opacity var(--halo-dur) var(--halo-ease) !important;
+    }
+
+    .devtools-tab > img, .devtools-tabbar-button::before, .devtools-button::before {
+      transition: fill var(--halo-dur) var(--halo-ease), opacity var(--halo-dur) var(--halo-ease),
+                  transform var(--halo-dur) var(--halo-ease-spring) !important;
+    }
+    .devtools-tab:hover > img {
+      transform: translateY(-1px);
+    }
+    .devtools-tab:active, .devtools-button:active:not(:disabled), .devtools-togglebutton:active {
+      transform: scale(0.97);
+      transition-duration: 60ms !important;
+    }
+
+    .devtools-tab-line {
+      transition: background-color var(--halo-dur) var(--halo-ease),
+                  opacity var(--halo-dur) var(--halo-ease),
+                  inset var(--halo-dur-slow) var(--halo-ease-spring) !important;
+    }
+
+    /* Panel switch: fade + lift */
+    @keyframes halo-panel-in {
+      from { opacity: 0; transform: translateY(4px); }
+      to   { opacity: 1; transform: none; }
+    }
+    .toolbox-panel[selected] {
+      animation: halo-panel-in var(--halo-dur-slow) var(--halo-ease) both;
+    }
+
+    /* Popups scale in from their anchor */
+    @keyframes halo-pop-in {
+      from { opacity: 0; transform: scale(0.97) translateY(-2px); }
+      to   { opacity: 1; transform: none; }
+    }
+    .tooltip-container[type="doorhanger"] .tooltip-panel,
+    .devtools-autocomplete-popup .tooltip-panel {
+      animation: halo-pop-in var(--halo-dur) var(--halo-ease) both;
+      transform-origin: top center;
+    }
+
+    /* Twisties rotate smoothly */
+    .theme-twisty, .arrow, .expander {
+      transition: transform var(--halo-dur) var(--halo-ease) !important;
+    }
+  }
+}

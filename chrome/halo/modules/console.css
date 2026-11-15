@@ -1,0 +1,93 @@
+/* Halo — Web Console (pref: halo.devtools.console)
+   Hairline rows, a coloured severity rail on the left edge of warnings/errors,
+   and a calmer input line. */
+@-moz-document url-prefix("chrome://devtools/content/webconsole/"), url-prefix("chrome://devtools/content/framework/") {
+
+  :root {
+    --console-message-border: color-mix(in oklab, var(--halo-border) 70%, transparent) !important;
+    --console-input-background: var(--halo-bg-1) !important;
+    --console-repeat-bubble-background: var(--halo-accent) !important;
+    --console-indent-border-color: var(--halo-accent-line) !important;
+  }
+
+  .message {
+    padding-inline-start: 8px !important;
+  }
+
+  .message:hover {
+    background-color: color-mix(in oklab, var(--halo-surface) 55%, transparent) !important;
+  }
+
+  .message.error, .message.warn {
+    background-image: linear-gradient(to right, var(--halo-rail), var(--halo-rail));
+    background-size: 2px 100%;
+    background-repeat: no-repeat;
+  }
+  .message.error { --halo-rail: var(--halo-red); }
+  .message.warn  { --halo-rail: var(--halo-amber); }
+  .message.info  { --halo-rail: var(--halo-blue); }
+
+  .message.error:hover {
+    background-color: color-mix(in oklab, var(--halo-red) 14%, var(--halo-bg-1)) !important;
+  }
+  .message.warn:hover {
+    background-color: color-mix(in oklab, var(--halo-amber) 13%, var(--halo-bg-1)) !important;
+  }
+
+  /* Repeat counter → accent pill */
+  .message-repeats {
+    border-radius: 999px !important;
+    color: var(--halo-accent-fg) !important;
+    font-weight: 600;
+  }
+
+  /* Timestamps / source links: quieter */
+  .message .timestamp {
+    color: var(--halo-text-dim) !important;
+  }
+  .message-location, .message-location .frame-link-source {
+    color: var(--halo-text-muted) !important;
+  }
+  .message-location:hover .frame-link-source {
+    color: var(--halo-accent-text) !important;
+  }
+
+  /* Input line */
+  .jsterm-input-container {
+    background-color: var(--console-input-background) !important;
+    border-top: 1px solid var(--halo-border) !important;
+  }
+  .jsterm-input-container:focus-within {
+    border-top-color: var(--halo-accent-line) !important;
+    box-shadow: 0 -1px 0 var(--halo-accent-softer);
+  }
+  .jsterm-input-container .cm-editor .cm-cursor,
+  .jsterm-input-container .CodeMirror-cursor {
+    border-left-color: var(--halo-accent) !important;
+  }
+  .webconsole-input-openEditorButton,
+  .webconsole-editor-toolbar {
+    border-radius: var(--halo-radius-sm);
+  }
+
+  /* Filter bar chips */
+  .webconsole-filterbar-primary .devtools-togglebutton,
+  .devtools-togglebutton {
+    border-radius: 999px !important;
+    padding-inline: 9px !important;
+    border: 1px solid transparent !important;
+  }
+  .devtools-togglebutton[aria-pressed="true"] {
+    background-color: var(--halo-accent-soft) !important;
+    color: var(--halo-accent-text) !important;
+    border-color: color-mix(in oklab, var(--halo-accent) 30%, transparent) !important;
+  }
+  .devtools-togglebutton:not([aria-pressed="true"]):hover {
+    background-color: var(--halo-surface) !important;
+  }
+
+  /* Sidebar (object inspector) */
+  .sidebar, .sidebar-wrapper {
+    background: var(--halo-bg-2) !important;
+  }
+}

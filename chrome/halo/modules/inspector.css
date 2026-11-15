@@ -1,0 +1,115 @@
+/* Halo — Inspector: markup view, rules, computed, layout (pref: halo.devtools.inspector) */
+@-moz-document url-prefix("chrome://devtools/content/inspector/"), url-prefix("chrome://devtools/content/framework/") {
+
+  /* Markup tree */
+  #markup-box, .markup-root {
+    background: var(--halo-bg-1) !important;
+  }
+  .tag-line {
+    border-radius: 0 var(--halo-radius-sm) var(--halo-radius-sm) 0;
+  }
+  .tag-line .tag-hover:not(.theme-selected) {
+    background-color: color-mix(in oklab, var(--halo-surface) 70%, transparent) !important;
+  }
+  .tag-line[selected] .tag-state.theme-selected,
+  .tag-line .tag-state.theme-selected {
+    background-color: var(--halo-accent-soft) !important;
+    box-shadow: inset 2px 0 0 var(--halo-accent);
+  }
+  .tag-line[selected] .theme-selected ~ .editor :is(.tag, .attr-name, .attr-value, .theme-fg-color3) ,
+  .tag-line .theme-selected ~ .editor * {
+    color: inherit;
+  }
+  .tag-line[selected] .theme-selected ~ .editor,
+  .tag-line .theme-selected ~ .editor {
+    color: var(--halo-text-strong) !important;
+  }
+  /* Keep syntax colours readable on the soft selection instead of forcing white */
+  .tag-line .theme-selected ~ .editor .tag { color: var(--theme-highlight-blue) !important; }
+  .tag-line .theme-selected ~ .editor .attr-name { color: var(--theme-highlight-red) !important; }
+  .tag-line .theme-selected ~ .editor .attr-value { color: var(--theme-highlight-orange) !important; }
+
+  .inspector-badge, .markup-badge {
+    border-radius: 999px !important;
+    padding-inline: 6px !important;
+    background: var(--halo-surface-2) !important;
+    color: var(--halo-text-muted) !important;
+    border-color: var(--halo-border-strong) !important;
+  }
+  .inspector-badge.active, .markup-badge.active {
+    background: var(--halo-accent) !important;
+    color: var(--halo-accent-fg) !important;
+    border-color: transparent !important;
+  }
+
+  .theme-twisty, .expander {
+    opacity: 0.6;
+  }
+  .theme-twisty:hover, .expander:hover {
+    opacity: 1;
+  }
+
+  /* Breadcrumbs */
+  .breadcrumbs-widget-item {
+    border-radius: var(--halo-radius-sm);
+  }
+  .breadcrumbs-widget-item[checked] .breadcrumbs-widget-item-tag,
+  .breadcrumbs-widget-item[aria-pressed="true"] {
+    color: var(--halo-accent-text) !important;
+  }
+
+  /* Rules view: each rule as a soft card */
+  #ruleview-container, .ruleview, #sidebar-panel-ruleview {
+    background: var(--halo-bg-2) !important;
+  }
+  .ruleview-rule {
+    margin: 6px 8px !important;
+    padding: 6px 8px !important;
+    border: 1px solid var(--halo-border) !important;
+    border-radius: var(--halo-radius) !important;
+    background: var(--halo-bg-1) !important;
+  }
+  .ruleview-rule:hover {
+    border-color: var(--halo-border-strong) !important;
+  }
+  .ruleview-rule + .ruleview-rule {
+    border-top: 1px solid var(--halo-border) !important;
+  }
+  .ruleview-header {
+    background: transparent !important;
+    color: var(--halo-text-muted) !important;
+    border: none !important;
+    font-weight: 550;
+    padding-inline: 10px !important;
+  }
+  .ruleview-selector-matched, .ruleview-selectors-container .matched {
+    color: var(--halo-accent-text) !important;
+  }
+  .ruleview-propertyname, .ruleview-namecontainer .ruleview-propertyname {
+    color: var(--theme-highlight-blue) !important;
+  }
+  .ruleview-propertyvalue {
+    color: var(--halo-text-strong) !important;
+  }
+  .ruleview-rule-source, .ruleview-rule-source-label {
+    color: var(--halo-text-dim) !important;
+  }
+  .ruleview-overridden .ruleview-propertyname,
+  .ruleview-overridden .ruleview-propertyvalue {
+    opacity: 0.5;
+  }
+
+  .ruleview-swatch, .inspector-swatch {
+    border-radius: 4px !important;
+    box-shadow: 0 0 0 1px var(--halo-border-strong) !important;
+  }
+
+  /* Computed / layout / box model */
+  .computed-property-view:hover, .computed-property-view.row-striped:hover {
+    background: var(--halo-surface) !important;
+  }
+  .boxmodel-main .boxmodel-margins { stroke: transparent; }
+  .layout-container .accordion {
+    background: var(--halo-bg-2) !important;
+  }
+}

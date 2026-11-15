@@ -1,0 +1,138 @@
+/* Halo — toolbars, buttons, inputs, splitters, popups (pref: halo.devtools.toolbars) */
+@-moz-document url-prefix("chrome://devtools/"), url-prefix("about:devtools") {
+
+  .devtools-toolbar {
+    background: var(--theme-toolbar-background) !important;
+    border-color: var(--theme-splitter-color) !important;
+  }
+
+  /* Buttons */
+  .devtools-button, .devtools-dropdown-button {
+    border-radius: var(--halo-radius-sm) !important;
+  }
+  .devtools-button:not(:disabled):hover {
+    background-color: var(--halo-surface-2) !important;
+  }
+  .devtools-button.checked, .devtools-button[aria-pressed="true"] {
+    background-color: var(--halo-accent-soft) !important;
+    color: var(--halo-accent-text) !important;
+  }
+  .devtools-button.checked::before, .devtools-button[aria-pressed="true"]::before {
+    fill: var(--halo-accent-text) !important;
+  }
+
+  /* Search / filter inputs become soft rounded fields */
+  .devtools-searchinput, .devtools-filterinput, .devtools-textinput,
+  .devtools-searchbox input, .search-field input, .devtools-input {
+    background-color: var(--halo-surface) !important;
+    border: 1px solid transparent !important;
+    border-radius: var(--halo-radius) !important;
+    color: var(--halo-text-strong) !important;
+    min-height: 22px;
+    box-shadow: none !important;
+  }
+  .devtools-searchinput:hover, .devtools-filterinput:hover, .devtools-textinput:hover,
+  .devtools-searchbox input:hover, .search-field input:hover {
+    border-color: var(--halo-border-strong) !important;
+  }
+  .devtools-searchinput:focus, .devtools-filterinput:focus, .devtools-textinput:focus,
+  .devtools-searchbox input:focus, .search-field input:focus {
+    background-color: var(--halo-bg-1) !important;
+    border-color: var(--halo-accent-line) !important;
+    outline: none !important;
+  }
+  .devtools-searchinput::placeholder, .devtools-filterinput::placeholder,
+  .devtools-searchbox input::placeholder {
+    color: var(--halo-text-dim) !important;
+  }
+  .devtools-searchbox, .devtools-searchbox:focus-within {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+  }
+
+  /* Separators: thinner, softer */
+  .devtools-separator {
+    border-color: var(--halo-border-strong) !important;
+    opacity: 0.7;
+  }
+
+  /* Splitters: hairline, accent on hover */
+  .split-box > .splitter, .h-split-box > .splitter,
+  .devtools-side-splitter, .devtools-horizontal-splitter {
+    background-color: var(--theme-splitter-color) !important;
+    border-color: transparent !important;
+  }
+  .split-box > .splitter:hover, .h-split-box > .splitter:hover,
+  .devtools-side-splitter:hover, .devtools-horizontal-splitter:hover {
+    background-color: var(--halo-accent) !important;
+  }
+
+  /* Popups, menus, tooltips */
+  .tooltip-container .tooltip-panel {
+    background: var(--theme-popup-background) !important;
+  }
+  .tooltip-container[type="doorhanger"] .tooltip-panel,
+  .tooltip-xul-wrapper-inner {
+    border-radius: var(--halo-radius-lg) !important;
+  }
+  .tooltip-container[type="doorhanger"] .menuitem > .command:not(:disabled):hover,
+  .tooltip-container[type="doorhanger"] .menuitem > .command:focus-visible {
+    background-color: var(--halo-surface-2) !important;
+    border-radius: var(--halo-radius-sm);
+  }
+  .tooltip-container[type="doorhanger"] .menuitem > .command[aria-checked="true"]::before {
+    fill: var(--halo-accent-text) !important;
+  }
+
+  .devtools-autocomplete-listbox .autocomplete-item {
+    border-radius: var(--halo-radius-sm);
+  }
+  .devtools-autocomplete-listbox .autocomplete-item.autocomplete-selected {
+    background-color: var(--halo-accent) !important;
+    color: var(--halo-accent-fg) !important;
+  }
+
+  /* Accordions / pane headers */
+  .accordion ._header {
+    background: var(--halo-bg-2) !important;
+    color: var(--halo-text-muted) !important;
+  }
+  .accordion ._header:hover {
+    background: var(--halo-surface) !important;
+    color: var(--halo-text-strong) !important;
+  }
+
+  /* Tables (Storage) */
+  .table-widget-column-header, .table-widget-cell {
+    border-color: var(--halo-border) !important;
+  }
+
+  /* Notification bars ("Local Mode", "paused in debugger", …) */
+  .notificationbox .notification[data-type="info"],
+  .notificationbox .notification[data-type="new"] {
+    background-color: color-mix(in oklab, var(--halo-accent) 7%, var(--halo-bg-2)) !important;
+    border-color: var(--halo-border) !important;
+  }
+  .notificationbox .notification[data-type="info"] .messageImage,
+  .notificationbox .notification[data-type="new"] .messageImage {
+    fill: var(--halo-accent-text) !important;
+  }
+  .notificationbox .notification .notificationButton {
+    border-radius: var(--halo-radius-sm) !important;
+    background-color: var(--halo-surface-2) !important;
+    color: var(--halo-text-strong) !important;
+    padding-inline: 8px !important;
+  }
+  .notificationbox .notification .notificationButton:hover {
+    background-color: var(--halo-accent) !important;
+    color: var(--halo-accent-fg) !important;
+  }
+  .notificationbox .messageCloseButton {
+    border-radius: var(--halo-radius-sm) !important;
+  }
+
+  :focus-visible {
+    outline-color: var(--halo-accent) !important;
+  }
+}

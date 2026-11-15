@@ -1,0 +1,16 @@
+/* Halo — slim overlay-style scrollbars (pref: halo.devtools.scrollbars) */
+@-moz-document url-prefix("chrome://devtools/"), url-prefix("about:devtools") {
+
+  :root, :root.theme-dark, :root.theme-light, :root[platform] {
+    scrollbar-width: thin !important;
+    scrollbar-color: color-mix(in oklab, var(--halo-text-dim) 55%, transparent) transparent !important;
+  }
+
+  * {
+    scrollbar-width: thin !important;
+  }
+
+  *:hover {
+    scrollbar-color: var(--halo-text-dim) transparent;
+  }
+}

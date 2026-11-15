@@ -1,0 +1,80 @@
+/* Halo — Network Monitor (pref: halo.devtools.netmonitor)
+   Airier rows, status-code pills, soft accent selection. */
+@-moz-document url-prefix("chrome://devtools/content/netmonitor/"), url-prefix("chrome://devtools/content/framework/") {
+
+  .requests-list-headers-wrapper, .requests-list-headers {
+    background: var(--halo-bg-2) !important;
+    border-bottom: 1px solid var(--halo-border) !important;
+  }
+  .requests-list-header-button {
+    color: var(--halo-text-muted) !important;
+    font-weight: 500;
+  }
+  .requests-list-header-button:hover {
+    background: var(--halo-surface) !important;
+    color: var(--halo-text-strong) !important;
+  }
+
+  .request-list-item {
+    height: 26px !important;
+  }
+  .request-list-item:not(.selected).odd {
+    background-color: var(--table-zebra-background) !important;
+  }
+  .request-list-item:not(.selected):hover {
+    background-color: var(--halo-surface) !important;
+  }
+  .request-list-item.selected {
+    background-color: var(--halo-accent-soft) !important;
+    color: var(--halo-text-strong) !important;
+    box-shadow: inset 2px 0 0 var(--halo-accent);
+  }
+  .request-list-item.selected .requests-list-column {
+    color: var(--halo-text-strong) !important;
+  }
+  .request-list-item .requests-list-column {
+    border-inline-start-color: transparent !important;
+  }
+
+  /* Status codes as pills */
+  .status-code {
+    border-radius: 999px !important;
+    padding-inline: 7px !important;
+    font-weight: 600 !important;
+    border: none !important;
+  }
+  .status-code[data-code^="2"], .request-list-item.selected .status-code[data-code^="2"] {
+    background: color-mix(in oklab, var(--halo-green) 18%, transparent) !important;
+    color: var(--halo-green) !important;
+  }
+  .status-code[data-code^="3"], .request-list-item.selected .status-code[data-code^="3"] {
+    background: color-mix(in oklab, var(--halo-blue) 18%, transparent) !important;
+    color: var(--halo-blue) !important;
+  }
+  .status-code[data-code^="4"], .status-code[data-code^="5"],
+  .request-list-item.selected .status-code[data-code^="4"],
+  .request-list-item.selected .status-code[data-code^="5"] {
+    background: color-mix(in oklab, var(--halo-red) 18%, transparent) !important;
+    color: var(--halo-red) !important;
+  }
+
+  /* Waterfall timings */
+  .requests-list-timings-box {
+    border-radius: 2px;
+  }
+
+  /* Status bar */
+  .devtools-toolbar.statusbar, .netmonitor-statusbar, .devtools-statusbar {
+    background: var(--halo-bg-2) !important;
+    color: var(--halo-text-muted) !important;
+    border-top: 1px solid var(--halo-border) !important;
+  }
+
+  /* Details sidebar */
+  .network-details-bar, .network-details-panel {
+    background: var(--halo-bg-2) !important;
+  }
+  .url-preview, .panel-container .tree-container .treeTable {
+    background: transparent !important;
+  }
+}

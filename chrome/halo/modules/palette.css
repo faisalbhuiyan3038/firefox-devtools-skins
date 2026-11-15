@@ -1,0 +1,121 @@
+/* Halo — colour palette (pref: halo.devtools.palette)
+   Remaps Firefox's own --theme-* variables, so every panel — including ones this
+   theme never styles explicitly — picks up the palette. light-dark() follows the
+   devtools light/dark setting automatically. Forced-colours mode is left alone. */
+@-moz-document url-prefix("chrome://devtools/"), url-prefix("about:devtools") {
+
+  :root:not([forced-colors-active]) {
+    /* Surfaces */
+    --theme-body-background: var(--halo-bg-1) !important;
+    --theme-body-emphasized-background: var(--halo-surface) !important;
+    --theme-body-alternate-emphasized-background: var(--halo-accent-softer) !important;
+    --theme-sidebar-background: var(--halo-bg-2) !important;
+
+    /* Toolbars */
+    --theme-tab-toolbar-background: var(--halo-bg-0) !important;
+    --theme-toolbar-background: var(--halo-bg-2) !important;
+    --theme-toolbar-alternate-background: var(--halo-bg-2) !important;
+    --theme-toolbar-background-alt: var(--halo-bg-2) !important;
+    --theme-toolbar-color: var(--halo-text-muted) !important;
+    --theme-toolbar-selected-color: var(--halo-text-strong) !important;
+    --theme-toolbar-highlighted-color: var(--halo-green) !important;
+    --theme-toolbar-background-hover: var(--halo-surface) !important;
+    --theme-toolbar-hover: var(--halo-surface) !important;
+    --theme-toolbar-hover-active: var(--halo-surface-2) !important;
+    --theme-toolbar-alternate-hover: var(--halo-surface) !important;
+    --theme-toolbar-hover-color: var(--halo-text-strong) !important;
+    --theme-toolbar-separator: var(--halo-border) !important;
+    --theme-toolbar-background-highlighted: var(--halo-accent-soft) !important;
+    --theme-toolbar-error-background: color-mix(in oklab, var(--halo-red) 22%, transparent) !important;
+
+    --toolbarbutton-background: var(--halo-surface) !important;
+    --toolbarbutton-hover-background: var(--halo-surface-2) !important;
+    --toolbarbutton-hover-color: var(--halo-text-strong) !important;
+
+    --theme-button-background: var(--halo-surface) !important;
+    --theme-button-active-background: var(--halo-surface-2) !important;
+    --theme-toolbarbutton-color: var(--halo-text-muted) !important;
+    --theme-toolbarbutton-hover-background: var(--halo-surface-2) !important;
+    --theme-toolbarbutton-hover-color: var(--halo-text-strong) !important;
+    --theme-toolbarbutton-checked-color: var(--halo-accent-text) !important;
+    --theme-toolbarbutton-checked-background: var(--halo-accent-soft) !important;
+    --theme-toolbarbutton-active-background: color-mix(in oklab, var(--halo-accent) 24%, transparent) !important;
+
+    --theme-accordion-header-background: var(--halo-bg-2) !important;
+    --theme-accordion-header-hover-background: var(--halo-surface) !important;
+
+    /* Selection */
+    --theme-selection-background: color-mix(in oklab, var(--halo-accent) 72%, var(--halo-bg-1)) !important;
+    --theme-selection-background-hover: var(--halo-accent-softer) !important;
+    --theme-selection-focus-background: var(--halo-surface-2) !important;
+    --theme-selection-color: light-dark(#ffffff, #ffffff) !important;
+    --theme-text-selection-background: color-mix(in oklab, var(--halo-accent) 30%, transparent) !important;
+    --theme-text-selection-unfocused-background: color-mix(in oklab, var(--halo-accent) 16%, transparent) !important;
+
+    /* Lines */
+    --theme-splitter-color: var(--halo-border) !important;
+    --theme-emphasized-splitter-color: var(--halo-border-strong) !important;
+    --theme-emphasized-splitter-color-hover: var(--halo-accent-line) !important;
+
+    /* Icons */
+    --theme-icon-color: var(--halo-text-muted) !important;
+    --theme-icon-hover-color: var(--halo-text-strong) !important;
+    --theme-icon-dimmed-color: var(--halo-text-dim) !important;
+    --theme-icon-checked-color: var(--halo-accent-text) !important;
+    --theme-icon-error-color: var(--halo-red) !important;
+    --theme-icon-warning-color: var(--halo-amber) !important;
+    --theme-focus-outline-color: var(--halo-accent) !important;
+
+    /* Text */
+    --theme-body-color: var(--halo-text) !important;
+    --theme-text-color-strong: var(--halo-text-strong) !important;
+    --theme-text-color-alt: var(--halo-text-muted) !important;
+    --theme-text-color-inactive: var(--halo-text-dim) !important;
+    --theme-comment: light-dark(#8a91a5, #5f687c) !important;
+    --theme-link-color: var(--halo-blue) !important;
+    --theme-internal-link-color: var(--halo-accent-text) !important;
+    --theme-stack-trace-text: var(--halo-red) !important;
+
+    /* Syntax */
+    --theme-highlight-green: light-dark(#13804b, #8fdc9f) !important;
+    --theme-highlight-blue: light-dark(#2463eb, #82aaff) !important;
+    --theme-highlight-purple: light-dark(#7a3fe0, #c3a6ff) !important;
+    --theme-highlight-red: light-dark(#c4246d, #ff86b8) !important;
+    --theme-highlight-bluegrey: light-dark(#3d5f8f, #8fa6c9) !important;
+    --theme-highlight-lightorange: light-dark(#a35f00, #f5c47a) !important;
+    --theme-highlight-orange: light-dark(#c2410c, #ffa26b) !important;
+    --theme-highlight-pink: light-dark(#a8329a, #f3a7f0) !important;
+    --theme-highlight-gray: light-dark(#dfe2ea, #e9edf6) !important;
+
+    /* Popups / tooltips */
+    --theme-popup-background: light-dark(#ffffff, #171a22) !important;
+    --theme-popup-color: var(--halo-text-strong) !important;
+    --theme-popup-border-color: var(--halo-border-strong) !important;
+    --theme-popup-dimmed: var(--halo-surface-2) !important;
+
+    --theme-select-background: var(--halo-surface) !important;
+    --theme-select-color: var(--halo-text-strong) !important;
+    --theme-select-hover-border-color: var(--halo-border-strong) !important;
+
+    /* Status */
+    --theme-warning-background: color-mix(in oklab, var(--halo-amber) 9%, var(--halo-bg-1)) !important;
+    --theme-warning-border: color-mix(in oklab, var(--halo-amber) 22%, transparent) !important;
+    --theme-warning-color: light-dark(#7a4a00, #f6cc85) !important;
+    --theme-error-background: color-mix(in oklab, var(--halo-red) 9%, var(--halo-bg-1)) !important;
+    --theme-error-border: color-mix(in oklab, var(--halo-red) 24%, transparent) !important;
+    --theme-error-color: light-dark(#b0123f, #ffb3c1) !important;
+
+    --theme-contrast-background: color-mix(in oklab, #ffd84d 30%, var(--halo-bg-1)) !important;
+    --table-zebra-background: light-dark(rgb(20 30 60 / 0.025), rgb(255 255 255 / 0.018)) !important;
+
+    /* Breakpoints */
+    --theme-breakpoint-logpoint: var(--theme-highlight-purple) !important;
+
+    scrollbar-color: var(--halo-surface-3) transparent;
+  }
+
+  ::selection {
+    background-color: var(--theme-text-selection-background) !important;
+    color: inherit !important;
+  }
+}

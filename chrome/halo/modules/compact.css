@@ -1,0 +1,24 @@
+/* Halo — compact density (pref: halo.devtools.compact) */
+@-moz-document url-prefix("chrome://devtools/"), url-prefix("about:devtools") {
+
+  .devtools-tabbar {
+    min-height: 29px !important;
+  }
+  .toolbox-tabs {
+    padding-block: 2px !important;
+  }
+  .devtools-tab {
+    min-height: 22px !important;
+    padding-inline: 8px 9px !important;
+  }
+  :root {
+    --theme-code-line-height: 1.35 !important;
+  }
+  .request-list-item {
+    height: 21px !important;
+  }
+  .ruleview-rule {
+    margin: 3px 4px !important;
+    padding: 3px 6px !important;
+  }
+}
