@@ -1,12 +1,19 @@
 /* ═══════════════════════════════════════════════════════════════════════
    HALO DEVTOOLS — module index
    Each module is switched on/off by a boolean pref in about:config.
+   The look is picked by ONE string pref, halo.devtools.preset:
+     halo · glass · ember · terminal · daylight
    Prefs are evaluated live: flipping one restyles open toolboxes instantly.
    Every module file is scoped with @-moz-document to devtools URLs only,
    so nothing here leaks into web pages.
+
+   Layering (later wins at equal specificity):
+     tokens → palette → structural modules → JS-UI styles → preset → density
+   A preset only overrides --halo-* tokens plus its own signature details,
+   so every structural module keeps working under every preset.
    ═══════════════════════════════════════════════════════════════════════ */
 
-@import url("modules/tokens.css");                                        /* always: design tokens + @font-face */
+@import url("modules/tokens.css");                                        /* always: Halo tokens + base @font-face */
 @import url("modules/palette.css")    (-moz-pref("halo.devtools.palette"));
 @import url("modules/font.css")       (-moz-pref("halo.devtools.font"));
 @import url("modules/mono.css")       (-moz-pref("halo.devtools.mono-font"));
@@ -19,5 +26,13 @@
 @import url("modules/scrollbars.css") (-moz-pref("halo.devtools.scrollbars"));
 @import url("modules/motion.css")     (-moz-pref("halo.devtools.motion"));
 @import url("modules/glow.css")       (-moz-pref("halo.devtools.glow"));
-@import url("modules/compact.css")    (-moz-pref("halo.devtools.compact"));
 @import url("modules/mods.css");                                          /* always: styles for JS-injected UI */
+
+/* Presets. An unknown or missing value falls back to plain Halo tokens. */
+@import url("presets/halo.css")       (-moz-pref("halo.devtools.preset", "halo"));
+@import url("presets/glass.css")      (-moz-pref("halo.devtools.preset", "glass"));
+@import url("presets/ember.css")      (-moz-pref("halo.devtools.preset", "ember"));
+@import url("presets/terminal.css")   (-moz-pref("halo.devtools.preset", "terminal"));
+@import url("presets/daylight.css")   (-moz-pref("halo.devtools.preset", "daylight"));
+
+@import url("modules/compact.css")    (-moz-pref("halo.devtools.compact"));   /* density beats any preset */

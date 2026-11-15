@@ -1,0 +1,57 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   SHARED LAYOUT · FLOATING PANES
+   Imported by presets that float each DevTools panel as a rounded card on a
+   canvas (Glass, Daylight). Presets supply the look through variables:
+     --halo-canvas        background painted behind everything (toolbox doc)
+     --halo-gutter        gap around / between panes            (default 8px)
+     --halo-pane-radius   pane corner radius                    (default 12px)
+     --halo-pane-shadow   pane box-shadow (ring + drop)
+   Panels are separate iframes, so each pane = the toolbox's frame element,
+   inset by the gutter and clipped to the radius.
+   ═══════════════════════════════════════════════════════════════════════ */
+@-moz-document url-prefix("chrome://devtools/"), url-prefix("about:devtools") {
+
+  :root {
+    --halo-gutter: 8px;
+    --halo-pane-radius: 12px;
+  }
+
+  #toolbox-container {
+    background: var(--halo-canvas) !important;
+  }
+  #toolbox-container > .theme-body,
+  .panels-and-console, #toolbox-deck {
+    background: transparent !important;
+  }
+
+  .devtools-tabbar {
+    background: transparent !important;
+    border-bottom: none !important;
+  }
+
+  .panels-and-console {
+    padding: 0 var(--halo-gutter) var(--halo-gutter) !important;
+  }
+  /* When the console is the selected tool it is absolutely positioned over
+     the whole container (inset: 0), which ignores the padding above. */
+  #toolbox-panel-webconsole[expanded] {
+    inset: 0 var(--halo-gutter) var(--halo-gutter) !important;
+  }
+  .toolbox-panel, #toolbox-panel-webconsole {
+    border-radius: var(--halo-pane-radius);
+    box-shadow: var(--halo-pane-shadow);
+  }
+  .toolbox-panel-iframe, #toolbox-panel-iframe-webconsole {
+    border-radius: var(--halo-pane-radius);
+    overflow: clip;
+  }
+  /* Split-console splitter becomes a gutter (still draggable). The stock
+     splitter overlaps both panes with negative margins; cancel them. */
+  .panels-and-console > .devtools-horizontal-splitter,
+  .panels-and-console > .splitter {
+    min-height: var(--halo-gutter) !important;
+    margin-block: 0 !important;
+    background: transparent !important;
+    border: none !important;
+  }
+}

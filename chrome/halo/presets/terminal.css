@@ -1,0 +1,321 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   PRESET · TERMINAL NEON  —  halo.devtools.preset = "terminal"
+   Phosphor-on-black CRT. JetBrains Mono everywhere, [ bracket ] tabs, the
+   selected tab inverted, dashed rules, square corners, text glow and
+   scanlines. Dark-only: forces color-scheme dark.
+
+   Every text colour is derived from --halo-accent, so
+   halo.devtools.accent = amber / cyan / #e8e8e8 … re-tints the whole
+   phosphor. Sub-switches:
+     halo.devtools.glow                → text glow
+     halo.devtools.terminal.scanlines  → scanline + vignette overlay
+   ═══════════════════════════════════════════════════════════════════════ */
+@-moz-document url-prefix("chrome://devtools/"), url-prefix("about:devtools") {
+
+  @font-face {
+    font-family: "Halo JetBrains Mono";
+    src: url("../fonts/terminal/JetBrainsMono-Variable.woff2") format("woff2");
+    font-weight: 100 800;
+    font-display: block;
+  }
+
+  /* ---------------------------------------------------------- tokens */
+  :root {
+    --halo-preset: terminal;
+    color-scheme: dark !important;
+
+    --halo-accent: #6cffa0;                     /* the phosphor */
+    --halo-accent-fg: #050806;
+    --halo-accent-text: var(--halo-accent);
+    --halo-amber-ph: #ffb547;
+    --halo-cyan-ph: #5ce1ff;
+    --halo-magenta-ph: #ff6ad5;
+
+    --halo-bg-0: #030504;
+    --halo-bg-1: #050806;
+    --halo-bg-2: #040705;
+    --halo-surface: color-mix(in oklab, var(--halo-accent) 8%, var(--halo-bg-1));
+    --halo-surface-2: color-mix(in oklab, var(--halo-accent) 14%, var(--halo-bg-1));
+    --halo-surface-3: color-mix(in oklab, var(--halo-accent) 22%, var(--halo-bg-1));
+    --halo-border: color-mix(in oklab, var(--halo-accent) 22%, transparent);
+    --halo-border-strong: color-mix(in oklab, var(--halo-accent) 38%, transparent);
+    --halo-line: 1px dashed var(--halo-border);
+    --halo-text: var(--halo-accent);
+    --halo-text-strong: #ffffff;
+    --halo-text-muted: color-mix(in oklab, var(--halo-accent) 62%, var(--halo-bg-1));
+    --halo-text-dim: color-mix(in oklab, var(--halo-accent) 45%, var(--halo-bg-1));
+    --halo-glow: 0 0 6px color-mix(in oklab, var(--halo-accent) 45%, transparent);
+
+    --halo-red: var(--halo-magenta-ph);
+    --halo-amber: var(--halo-amber-ph);
+    --halo-green: var(--halo-accent);
+    --halo-blue: var(--halo-cyan-ph);
+    --halo-cyan: var(--halo-cyan-ph);
+
+    --halo-radius-sm: 0px;
+    --halo-radius: 0px;
+    --halo-radius-lg: 0px;
+    --halo-shadow-pop: 0 0 0 1px var(--halo-border-strong), 0 12px 30px -8px rgb(0 0 0 / 0.8);
+
+    --halo-font-ui: var(--halo-ui-font-override, "Halo JetBrains Mono"), "Cascadia Code", Consolas, monospace;
+    --halo-font-mono: var(--halo-mono-font-override, "Halo JetBrains Mono"), "Cascadia Code", Consolas, monospace;
+  }
+
+  :root:not([forced-colors-active]) {
+    --theme-highlight-blue: #ffffff !important;              /* tag names */
+    --theme-highlight-red: var(--halo-cyan-ph) !important;   /* attribute names */
+    --theme-highlight-orange: var(--halo-amber-ph) !important;
+    --theme-highlight-lightorange: var(--halo-amber-ph) !important;
+    --theme-highlight-green: var(--halo-amber-ph) !important;
+    --theme-highlight-purple: var(--halo-magenta-ph) !important;
+    --theme-highlight-pink: var(--halo-magenta-ph) !important;
+    --theme-highlight-bluegrey: var(--halo-cyan-ph) !important;
+    --theme-highlight-gray: var(--halo-surface-3) !important;
+    --theme-comment: var(--halo-text-dim) !important;
+    --theme-link-color: var(--halo-cyan-ph) !important;
+    --theme-body-color: var(--halo-accent) !important;
+    --theme-text-color-strong: var(--halo-accent) !important;
+    --theme-selection-background: color-mix(in oklab, var(--halo-accent) 22%, var(--halo-bg-1)) !important;
+    --theme-selection-color: #ffffff !important;
+    --theme-popup-background: #070b08 !important;
+    --theme-popup-color: var(--halo-accent) !important;
+    --theme-warning-background: color-mix(in oklab, var(--halo-amber-ph) 7%, var(--halo-bg-1)) !important;
+    --theme-warning-border: transparent !important;
+    --theme-warning-color: var(--halo-amber-ph) !important;
+    --theme-error-background: color-mix(in oklab, var(--halo-magenta-ph) 8%, var(--halo-bg-1)) !important;
+    --theme-error-border: transparent !important;
+    --theme-error-color: var(--halo-magenta-ph) !important;
+    --console-output-color: var(--halo-accent) !important;
+    --console-message-color: var(--halo-accent) !important;
+  }
+
+  /* Square everything */
+  *:not(.halo-ripple), *::before, *::after {
+    border-radius: 0 !important;
+  }
+
+  /* Text glow (follows halo.devtools.glow) */
+  @media (-moz-pref("halo.devtools.glow")) {
+    body, .theme-body, .devtools-tabbar {
+      text-shadow: var(--halo-glow);
+    }
+    .devtools-tab.selected, .devtools-tab.selected *,
+    .autocomplete-selected, .halo-copy-btn:hover {
+      text-shadow: none !important;
+    }
+  }
+
+  /* Scanlines + vignette (halo.devtools.terminal.scanlines) */
+  @media (-moz-pref("halo.devtools.terminal.scanlines")) {
+    :root::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 2147483640;
+      pointer-events: none;
+      background:
+        repeating-linear-gradient(to bottom, transparent 0, transparent 2px, rgb(0 0 0 / 0.22) 3px),
+        radial-gradient(130% 100% at 50% 50%, transparent 62%, rgb(0 0 0 / 0.45));
+    }
+  }
+
+  /* --------------------------------------------------- [ tab ] strip */
+  .devtools-tabbar {
+    background: var(--halo-bg-0) !important;
+    background-image: none !important;
+    border-bottom: 1px solid var(--halo-border-strong) !important;
+    min-height: 34px !important;
+  }
+  .toolbox-tabs {
+    gap: 2px !important;
+  }
+  .devtools-tab {
+    min-height: 24px !important;
+    padding-inline: 6px 8px !important;
+    color: var(--halo-accent) !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+  .devtools-tab > img {
+    display: none !important;              /* labels only, like a TUI */
+  }
+  .devtools-tab-label {
+    text-transform: lowercase;
+    margin-inline-start: 0 !important;
+  }
+  .devtools-tab-label::before { content: "[ "; }
+  .devtools-tab-label::after  { content: " ]"; }
+  .devtools-tab:not(.selected):hover {
+    background: var(--halo-surface) !important;
+    color: #ffffff !important;
+  }
+  .devtools-tab.selected {
+    background: var(--halo-accent) !important;
+    color: var(--halo-accent-fg) !important;
+  }
+  .devtools-tab.selected .devtools-tab-label {
+    text-transform: uppercase;
+    font-weight: 800;
+  }
+  .devtools-tab .devtools-tab-line {
+    display: none !important;
+  }
+
+  /* JS indicator = the inverted block, sliding */
+  :root[halo-tab-indicator] .devtools-tab.selected {
+    background: transparent !important;
+    color: var(--halo-accent-fg) !important;
+  }
+  .halo-tab-indicator {
+    background: var(--halo-accent) !important;
+    box-shadow: 0 0 12px color-mix(in oklab, var(--halo-accent) 45%, transparent) !important;
+  }
+  .halo-tab-indicator::after {
+    display: none;
+  }
+
+  .devtools-tabbar-button::before, .devtools-button::before {
+    fill: var(--halo-accent) !important;
+  }
+  .toolbox-error {
+    background: transparent !important;
+    color: var(--halo-magenta-ph) !important;
+    font-weight: 700 !important;
+  }
+  .toolbox-error::before {
+    fill: var(--halo-magenta-ph) !important;
+  }
+
+  /* --------------------------------------------- toolbars and fields */
+  .devtools-toolbar, .tabs .tabs-navigation, .accordion ._header {
+    background: var(--halo-bg-1) !important;
+    border-color: var(--halo-border) !important;
+    border-bottom-style: dashed !important;
+  }
+  .devtools-searchinput, .devtools-filterinput, .devtools-textinput,
+  .devtools-searchbox input, .search-field input, .devtools-input {
+    background-color: transparent !important;
+    border: none !important;
+    border-bottom: 1px dashed var(--halo-border-strong) !important;
+    color: #ffffff !important;
+    caret-color: var(--halo-accent);
+  }
+  .devtools-searchinput:focus, .devtools-filterinput:focus, .devtools-textinput:focus,
+  .devtools-searchbox input:focus, .search-field input:focus {
+    background-color: var(--halo-surface) !important;
+    border-bottom: 1px solid var(--halo-accent) !important;
+    box-shadow: none !important;
+  }
+  .devtools-searchinput::placeholder, .devtools-filterinput::placeholder,
+  .devtools-searchbox input::placeholder {
+    color: var(--halo-text-dim) !important;
+  }
+
+  .split-box > .splitter, .h-split-box > .splitter,
+  .devtools-side-splitter, .devtools-horizontal-splitter {
+    background-color: var(--halo-border) !important;
+  }
+
+  .tabs .tabs-menu-item a { color: var(--halo-text-muted) !important; }
+  .tabs .tabs-menu-item.is-active a { color: #ffffff !important; }
+  .tabs .tabs-menu-item.is-active a::before { content: ">"; color: var(--halo-accent); }
+  .tabs .tabs-menu-item .devtools-tab-line { display: none !important; }
+
+  /* --------------------------------------------------------- console */
+  .webconsole-output .message {
+    border-color: transparent !important;
+    background-image: none !important;
+  }
+  .message.warn { color: var(--halo-amber-ph) !important; }
+  .message.error { color: var(--halo-magenta-ph) !important; }
+  .message.info .message-body { color: var(--halo-cyan-ph); }
+  .message:hover {
+    background-color: var(--halo-surface) !important;
+  }
+  .message-location, .message-location .frame-link-source {
+    color: var(--halo-text-dim) !important;
+  }
+  .webconsole-filterbar-primary .devtools-togglebutton,
+  .devtools-togglebutton {
+    border: none !important;
+    background: transparent !important;
+    padding-inline: 6px !important;
+  }
+  .devtools-togglebutton::before { content: "[ ] "; white-space: pre; }
+  .devtools-togglebutton[aria-pressed="true"]::before { content: "[x] "; }
+  .webconsole-filterbar-primary .devtools-togglebutton[aria-pressed="true"],
+  .devtools-togglebutton[aria-pressed="true"] {
+    background: transparent !important;
+    color: var(--halo-accent) !important;
+  }
+  .devtools-togglebutton[data-category="error"] { color: var(--halo-magenta-ph) !important; }
+  .devtools-togglebutton[data-category="warn"] { color: var(--halo-amber-ph) !important; }
+  .devtools-togglebutton:not([aria-pressed="true"]) { color: var(--halo-text-dim) !important; }
+
+  .jsterm-input-container {
+    border-top: 1px dashed var(--halo-border-strong) !important;
+    background: var(--halo-bg-1) !important;
+    box-shadow: none !important;
+  }
+  .jsterm-input-container .cm-cursor, .jsterm-input-container .CodeMirror-cursor {
+    border-left: 8px solid color-mix(in oklab, var(--halo-accent) 70%, transparent) !important;
+  }
+
+  /* ------------------------------------------------------- inspector */
+  .tag-line .tag-state.theme-selected {
+    background-color: color-mix(in oklab, var(--halo-accent) 16%, transparent) !important;
+    background-image: none !important;
+  }
+  .tag-line .theme-selected ~ .editor, .tag-line .theme-selected ~ .editor * {
+    color: #ffffff !important;
+  }
+  .inspector-badge, .markup-badge {
+    background: transparent !important;
+    border: 1px solid var(--halo-magenta-ph) !important;
+    color: var(--halo-magenta-ph) !important;
+  }
+  .ruleview-rule {
+    margin: 0 !important;
+    padding: 6px 12px !important;
+    border: none !important;
+    border-bottom: 1px dashed var(--halo-border) !important;
+    background: transparent !important;
+  }
+  .ruleview-propertyvalue { color: #ffffff !important; }
+  .ruleview-rule-source, .ruleview-rule-source-label { color: var(--halo-text-dim) !important; }
+
+  /* ------------------------------------------------- network/debugger */
+  .request-list-item:not(.selected).odd { background-color: transparent !important; }
+  .request-list-item.selected {
+    background-color: color-mix(in oklab, var(--halo-accent) 16%, transparent) !important;
+    box-shadow: none !important;
+  }
+  .status-code {
+    background: transparent !important;
+    padding-inline: 0 !important;
+  }
+  .status-code::before { content: "["; }
+  .status-code::after  { content: "]"; }
+  .status-code[data-code^="2"] { color: var(--halo-accent) !important; }
+  .status-code[data-code^="3"] { color: var(--halo-cyan-ph) !important; }
+  .status-code[data-code^="4"], .status-code[data-code^="5"] { color: var(--halo-magenta-ph) !important; }
+
+  .cm-editor, .cm-gutters, .CodeMirror, .CodeMirror-gutters {
+    background: var(--halo-bg-1) !important;
+  }
+  .cm-gutters, .CodeMirror-gutters {
+    border-inline-end: 1px dashed var(--halo-border) !important;
+  }
+  .cm-content { color: var(--halo-accent); }
+  .cm-cursor { border-left: 8px solid color-mix(in oklab, var(--halo-accent) 70%, transparent) !important; }
+
+  .halo-toast {
+    background: #070b08 !important;
+    border: 1px solid var(--halo-border-strong) !important;
+    color: var(--halo-accent) !important;
+  }
+  .halo-copy-btn {
+    background: var(--halo-bg-1) !important;
+    color: var(--halo-accent) !important;
+  }
+}

@@ -1,0 +1,317 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   PRESET · DAYLIGHT / STUDIO  —  halo.devtools.preset = "daylight"
+   Calm, airy editor look: solid panes floating on a cool canvas with soft
+   shadows, cobalt pill tabs, rounded tinted console rows, frosted-free
+   fields. Figtree + DM Mono.
+   Follows the DevTools light/dark setting: every colour is a light-dark()
+   pair (light = white panes on #EEF1F6, dark = #161A22 panes on #0D1016).
+   ═══════════════════════════════════════════════════════════════════════ */
+@import url("shared/floating.css");
+
+@-moz-document url-prefix("chrome://devtools/"), url-prefix("about:devtools") {
+
+  @font-face {
+    font-family: "Halo Figtree";
+    src: url("../fonts/daylight/Figtree-Variable.woff2") format("woff2");
+    font-weight: 300 900;
+    font-display: block;
+  }
+  @font-face {
+    font-family: "Halo DM Mono";
+    src: url("../fonts/daylight/DMMono-Regular.woff2") format("woff2");
+    font-weight: 400;
+    font-display: block;
+  }
+  @font-face {
+    font-family: "Halo DM Mono";
+    src: url("../fonts/daylight/DMMono-Medium.woff2") format("woff2");
+    font-weight: 500 700;
+    font-display: block;
+  }
+
+  /* ---------------------------------------------------------- tokens */
+  :root {
+    --halo-preset: daylight;
+
+    --halo-accent: light-dark(#2f5bff, #7b97ff);
+    --halo-accent-fg: light-dark(#ffffff, #0b1230);
+    --halo-accent-text: light-dark(#2648d8, #a6b9ff);
+
+    --halo-canvas-color: light-dark(#eef1f6, #0d1016);
+    --halo-bg-0: var(--halo-canvas-color);
+    --halo-bg-1: light-dark(#ffffff, #161a22);
+    --halo-bg-2: light-dark(#ffffff, #161a22);
+    --halo-surface: light-dark(#f3f5f9, #1d222c);
+    --halo-surface-2: light-dark(#e9edf4, #232937);
+    --halo-surface-3: light-dark(#dde3ec, #2b3240);
+    --halo-border: light-dark(#edf0f5, #20252f);
+    --halo-border-strong: light-dark(#e1e6ef, #2c3240);
+    --halo-text: light-dark(#2a3245, #c9d0dc);
+    --halo-text-strong: light-dark(#1b2233, #e8ecf4);
+    --halo-text-muted: light-dark(#5b6478, #9aa3b5);
+    --halo-text-dim: light-dark(#7e879b, #6f788c);
+
+    --halo-red: light-dark(#b4123c, #ff9db2);
+    --halo-red-bg: light-dark(#fdeef1, #2c151c);
+    --halo-red-chip: light-dark(#fde8ec, #3a1520);
+    --halo-amber: light-dark(#8a5200, #f6c97a);
+    --halo-amber-bg: light-dark(#fdf6e8, #2a2112);
+    --halo-amber-chip: light-dark(#fdf1dc, #3a2a10);
+    --halo-green: light-dark(#17784a, #8fe0b0);
+    --halo-blue: light-dark(#2648d8, #8fa8ff);
+    --halo-cyan: light-dark(#0e7490, #7fd6e8);
+
+    --halo-radius-sm: 7px;
+    --halo-radius: 8px;
+    --halo-radius-lg: 12px;
+    --halo-ring: light-dark(#e1e6ef, #252b37);
+    --halo-drop: light-dark(rgb(27 34 51 / 0.06), rgb(0 0 0 / 0.45));
+    --halo-shadow-pop: 0 14px 34px -10px light-dark(rgb(27 34 51 / 0.22), rgb(0 0 0 / 0.65)), 0 0 0 1px var(--halo-ring);
+
+    /* shared/floating.css */
+    --halo-canvas: var(--halo-canvas-color);
+    --halo-pane-radius: 12px;
+    --halo-pane-shadow: 0 1px 2px var(--halo-drop), 0 0 0 1px var(--halo-ring);
+
+    --halo-font-ui: var(--halo-ui-font-override, "Halo Figtree"), "Segoe UI Variable Text", system-ui, sans-serif;
+    --halo-font-mono: var(--halo-mono-font-override, "Halo DM Mono"), "Cascadia Code", Consolas, monospace;
+  }
+
+  :root:not([forced-colors-active]) {
+    --theme-highlight-blue: light-dark(#2648d8, #8fa8ff) !important;
+    --theme-highlight-red: light-dark(#a3367a, #f09ad0) !important;
+    --theme-highlight-orange: light-dark(#9a5b00, #f2c27a) !important;
+    --theme-highlight-lightorange: light-dark(#9a5b00, #f2c27a) !important;
+    --theme-highlight-green: light-dark(#17784a, #8fe0b0) !important;
+    --theme-highlight-purple: light-dark(#7a3fd1, #c3a6ff) !important;
+    --theme-highlight-pink: light-dark(#a3367a, #f09ad0) !important;
+    --theme-highlight-bluegrey: light-dark(#4a5c80, #a3b1cc) !important;
+    --theme-comment: light-dark(#7e879b, #6f788c) !important;
+    --theme-selection-background: color-mix(in oklab, var(--halo-accent) 14%, var(--halo-bg-1)) !important;
+    --theme-selection-color: var(--halo-text-strong) !important;
+    --theme-popup-background: var(--halo-bg-1) !important;
+    --theme-warning-background: var(--halo-amber-bg) !important;
+    --theme-warning-border: transparent !important;
+    --theme-warning-color: light-dark(#7a4700, #f6d08f) !important;
+    --theme-error-background: var(--halo-red-bg) !important;
+    --theme-error-border: transparent !important;
+    --theme-error-color: light-dark(#9e0f35, #ffb3c3) !important;
+    --table-zebra-background: light-dark(rgb(27 34 51 / 0.02), rgb(255 255 255 / 0.02)) !important;
+  }
+
+  /* ------------------------------------------------- pill tab strip */
+  .devtools-tabbar {
+    min-height: 44px !important;
+    padding-inline: 6px !important;
+  }
+  .toolbox-tabs {
+    top: 6px !important;
+    bottom: 6px !important;
+    padding-block: 0 !important;
+    gap: 2px !important;
+  }
+  .devtools-tab {
+    align-self: stretch !important;
+    min-height: 0 !important;
+    border-radius: 999px !important;
+    padding-inline: 12px 14px !important;
+    color: light-dark(#4a5368, #b3bbcb) !important;
+    font-weight: 500;
+  }
+  .devtools-tab:not(.selected):hover {
+    background-color: light-dark(rgb(27 34 51 / 0.05), rgb(255 255 255 / 0.05)) !important;
+  }
+  .devtools-tab.selected,
+  .devtools-tab.selected:hover {
+    background-color: var(--halo-accent) !important;
+    box-shadow: 0 4px 12px -4px color-mix(in oklab, var(--halo-accent) 70%, transparent) !important;
+    color: var(--halo-accent-fg) !important;
+  }
+  .devtools-tab.selected > img {
+    fill: var(--halo-accent-fg) !important;
+    filter: none !important;
+  }
+  .devtools-tab.selected .devtools-tab-label {
+    font-weight: 650;
+  }
+  .devtools-tab .devtools-tab-line {
+    display: none !important;
+  }
+  :root[halo-tab-indicator] .devtools-tab.selected {
+    background-color: transparent !important;
+    box-shadow: none !important;
+    color: var(--halo-accent-fg) !important;
+  }
+  .halo-tab-indicator {
+    border-radius: 999px !important;
+    background: var(--halo-accent) !important;
+    box-shadow: 0 4px 12px -4px color-mix(in oklab, var(--halo-accent) 70%, transparent) !important;
+  }
+  .halo-tab-indicator::after {
+    display: none;
+  }
+
+  @media (-moz-pref("halo.devtools.compact")) {
+    :root .devtools-tabbar { min-height: 34px !important; }
+    :root .toolbox-tabs { top: 4px !important; bottom: 4px !important; }
+    :root .devtools-tab { min-height: 0 !important; padding-inline: 10px 11px !important; }
+  }
+
+  .devtools-tabbar-button, #toolbox-controls > button {
+    border-radius: 9px !important;
+  }
+  #toolbox-buttons-start .devtools-tabbar-button:first-child {
+    background: var(--halo-bg-1) !important;
+    box-shadow: 0 1px 2px var(--halo-drop), 0 0 0 1px var(--halo-ring);
+    margin-inline-end: 6px !important;
+  }
+  .toolbox-error {
+    height: 26px !important;
+    padding-inline: 9px 10px !important;
+    margin-inline: 6px !important;
+    border-radius: 999px !important;
+    background-color: var(--halo-red-chip) !important;
+    color: var(--halo-red) !important;
+    font-weight: 600 !important;
+  }
+
+  .notificationbox .notification[data-type="info"],
+  .notificationbox .notification[data-type="new"] {
+    background-color: var(--halo-bg-1) !important;
+    border-color: var(--halo-ring) !important;
+  }
+
+  /* ------------------------------------------------------ inside panes */
+  .devtools-toolbar {
+    background: var(--halo-bg-1) !important;
+    border-color: var(--halo-border) !important;
+  }
+  .devtools-searchinput, .devtools-filterinput, .devtools-textinput,
+  .devtools-searchbox input, .search-field input, .devtools-input {
+    background-color: var(--halo-surface) !important;
+    border: 1px solid transparent !important;
+    border-radius: 8px !important;
+  }
+  .devtools-searchinput:focus, .devtools-filterinput:focus, .devtools-textinput:focus,
+  .devtools-searchbox input:focus, .search-field input:focus {
+    background-color: var(--halo-bg-1) !important;
+    border-color: color-mix(in oklab, var(--halo-accent) 50%, var(--halo-bg-1)) !important;
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--halo-accent) 14%, transparent) !important;
+  }
+
+  /* Sidebar tabs: soft rounded chips */
+  .tabs .tabs-navigation {
+    background: var(--halo-bg-1) !important;
+    border-bottom-color: var(--halo-border) !important;
+  }
+  .tabs .tabs-menu-item {
+    margin-block: 4px !important;
+    border-radius: 7px !important;
+  }
+  .tabs .tabs-menu-item.is-active {
+    background: light-dark(#f0f3fa, #232937) !important;
+  }
+  .tabs .tabs-menu-item.is-active a {
+    font-weight: 600;
+  }
+  .tabs .tabs-menu-item .devtools-tab-line {
+    display: none !important;
+  }
+
+  /* Console: rounded tinted rows, chip filters, a field-like input */
+  .webconsole-output .message {
+    border-radius: 7px;
+    border-color: transparent !important;
+    margin-inline: 6px !important;
+    width: calc(100% - 12px) !important;
+    background-image: none !important;
+  }
+  .message.warn {
+    background-color: var(--halo-amber-bg) !important;
+  }
+  .message.error {
+    background-color: var(--halo-red-bg) !important;
+  }
+  .message:not(.warn):not(.error):hover {
+    background-color: var(--halo-surface) !important;
+  }
+  .webconsole-filterbar-primary .devtools-togglebutton,
+  .devtools-togglebutton {
+    border: none !important;
+    border-radius: 999px !important;
+    font-weight: 600;
+  }
+  .webconsole-filterbar-primary .devtools-togglebutton[aria-pressed="true"],
+  .devtools-togglebutton[aria-pressed="true"] {
+    background-color: var(--halo-surface-2) !important;
+    color: var(--halo-text-strong) !important;
+  }
+  .devtools-togglebutton[data-category="error"][aria-pressed="true"] {
+    background-color: var(--halo-red-chip) !important;
+    color: var(--halo-red) !important;
+  }
+  .devtools-togglebutton[data-category="warn"][aria-pressed="true"] {
+    background-color: var(--halo-amber-chip) !important;
+    color: var(--halo-amber) !important;
+  }
+  .jsterm-input-container {
+    margin: 4px 8px 8px !important;
+    border: none !important;
+    border-radius: 8px !important;
+    background: var(--halo-surface) !important;
+    box-shadow: inset 0 0 0 1.5px color-mix(in oklab, var(--halo-accent) 30%, var(--halo-surface)) !important;
+  }
+  .jsterm-input-container:focus-within {
+    box-shadow: inset 0 0 0 1.5px color-mix(in oklab, var(--halo-accent) 60%, var(--halo-surface)), 0 0 0 3px color-mix(in oklab, var(--halo-accent) 12%, transparent) !important;
+  }
+
+  /* Inspector */
+  .tag-line .tag-state.theme-selected {
+    background-color: color-mix(in oklab, var(--halo-accent) 11%, var(--halo-bg-1)) !important;
+    background-image: none !important;
+    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--halo-accent) 30%, var(--halo-bg-1));
+    border-radius: 7px;
+  }
+  .tag-line .theme-selected ~ .editor {
+    color: var(--halo-text-strong) !important;
+  }
+  .inspector-badge, .markup-badge {
+    border-radius: 999px !important;
+    background: color-mix(in oklab, var(--halo-accent) 12%, var(--halo-bg-1)) !important;
+    border-color: transparent !important;
+    color: var(--halo-accent-text) !important;
+  }
+  #ruleview-container, .ruleview {
+    background: var(--halo-bg-1) !important;
+  }
+  .ruleview-rule {
+    border-radius: 9px !important;
+    background: light-dark(#f7f9fc, #1b2029) !important;
+    border-color: light-dark(#e8ecf3, #252b37) !important;
+  }
+  .ruleview-swatch, .inspector-swatch {
+    border-radius: 3px !important;
+  }
+
+  /* Network / debugger */
+  .request-list-item.selected {
+    background-color: color-mix(in oklab, var(--halo-accent) 11%, var(--halo-bg-1)) !important;
+    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--halo-accent) 25%, var(--halo-bg-1)) !important;
+  }
+  .status-code {
+    font-weight: 600 !important;
+  }
+  .source-tab.active {
+    box-shadow: inset 0 -2px 0 var(--halo-accent) !important;
+  }
+  .frames [role="listitem"].selected, .frames .frame.selected,
+  .sources-list .tree .node.focused {
+    background-color: color-mix(in oklab, var(--halo-accent) 11%, var(--halo-bg-1)) !important;
+    box-shadow: none !important;
+  }
+
+  .halo-toast {
+    border-radius: 12px !important;
+    background: var(--halo-bg-1) !important;
+  }
+}

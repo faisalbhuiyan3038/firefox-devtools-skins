@@ -3,7 +3,7 @@
 
   @font-face {
     font-family: "Halo Geist";
-    src: url("../fonts/Geist-Variable.woff2") format("woff2");
+    src: url("../fonts/halo/Geist-Variable.woff2") format("woff2");
     font-weight: 100 900;
     font-style: normal;
     font-display: block;
@@ -11,7 +11,7 @@
 
   @font-face {
     font-family: "Halo Geist Mono";
-    src: url("../fonts/GeistMono-Variable.woff2") format("woff2");
+    src: url("../fonts/halo/GeistMono-Variable.woff2") format("woff2");
     font-weight: 100 900;
     font-style: normal;
     font-display: block;

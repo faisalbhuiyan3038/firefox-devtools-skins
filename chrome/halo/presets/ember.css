@@ -1,0 +1,330 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   PRESET · EMBER / WARM IDE  —  halo.devtools.preset = "ember"
+   Dense, warm dark theme that behaves like a code editor: flat editor tabs
+   with a copper→gold top line, an icon gutter in the console, indent guides
+   in the markup tree, the inspector breadcrumbs as an IDE status bar, CSS
+   rules as a flat hairline list. Instrument Sans + Martian Mono.
+   Dark-only: forces color-scheme dark.
+   ═══════════════════════════════════════════════════════════════════════ */
+@-moz-document url-prefix("chrome://devtools/"), url-prefix("about:devtools") {
+
+  @font-face {
+    font-family: "Halo Instrument Sans";
+    src: url("../fonts/ember/InstrumentSans-Variable.woff2") format("woff2");
+    font-weight: 400 700;
+    font-display: block;
+  }
+  @font-face {
+    font-family: "Halo Martian Mono";
+    src: url("../fonts/ember/MartianMono-Variable.woff2") format("woff2");
+    font-weight: 100 800;
+    font-display: block;
+  }
+
+  /* ---------------------------------------------------------- tokens */
+  :root {
+    --halo-preset: ember;
+    color-scheme: dark !important;
+
+    --halo-accent: #ff8a3d;
+    --halo-accent-fg: #1a0e05;
+    --halo-accent-text: #ffb88a;
+    --halo-gold: #e8c07a;
+    --halo-ember-line: linear-gradient(90deg, var(--halo-accent), var(--halo-gold));
+
+    --halo-bg-0: #100d0b;   /* tab strip, status bar */
+    --halo-bg-1: #14110f;   /* editor / panel body */
+    --halo-bg-2: #1a1613;   /* toolbars, sidebars */
+    --halo-surface: #211c18;
+    --halo-surface-2: #2b2420;
+    --halo-surface-3: #3a2f28;
+    --halo-border: #2b2420;
+    --halo-border-strong: #3a2f28;
+    --halo-text: #d9cbbd;
+    --halo-text-strong: #f5ebe0;
+    --halo-text-muted: #a8988a;
+    --halo-text-dim: #75665a;
+
+    --halo-red: #ff8f7a;
+    --halo-amber: #e8c07a;
+    --halo-green: #a9d18e;
+    --halo-blue: #8fb8de;
+    --halo-cyan: #8fd3c8;
+
+    --halo-radius-sm: 4px;
+    --halo-radius: 5px;
+    --halo-radius-lg: 8px;
+    --halo-shadow-pop: 0 14px 34px -10px rgb(0 0 0 / 0.7), 0 0 0 1px #3a2f28;
+
+    --halo-font-ui: var(--halo-ui-font-override, "Halo Instrument Sans"), "Segoe UI Variable Text", system-ui, sans-serif;
+    --halo-font-mono: var(--halo-mono-font-override, "Halo Martian Mono"), "Cascadia Code", Consolas, monospace;
+  }
+
+  :root:not([forced-colors-active]) {
+    --theme-highlight-blue: #ff9e64 !important;      /* tag names: warm orange */
+    --theme-highlight-red: #e8c07a !important;       /* attribute names: gold */
+    --theme-highlight-orange: #a9d18e !important;    /* attribute values: sage */
+    --theme-highlight-lightorange: #e8c07a !important;
+    --theme-highlight-green: #a9d18e !important;
+    --theme-highlight-purple: #f2a2c4 !important;
+    --theme-highlight-pink: #f2a2c4 !important;
+    --theme-highlight-bluegrey: #8fb8de !important;
+    --theme-highlight-gray: #3a2f28 !important;
+    --theme-comment: #75665a !important;
+    --theme-link-color: #8fb8de !important;
+    --theme-code-line-height: 1.6 !important;
+    --theme-selection-background: color-mix(in oklab, #ff8a3d 30%, #14110f) !important;
+    --theme-selection-color: #f5ebe0 !important;
+    --theme-popup-background: #1e1915 !important;
+    --theme-warning-background: rgb(232 192 122 / 0.08) !important;
+    --theme-warning-border: rgb(232 192 122 / 0.16) !important;
+    --theme-warning-color: #f0d49a !important;
+    --theme-error-background: rgb(255 120 95 / 0.10) !important;
+    --theme-error-border: rgb(255 120 95 / 0.18) !important;
+    --theme-error-color: #ffb3a3 !important;
+  }
+
+  /* Martian Mono is wide: trim it a touch so dense views keep their columns */
+  .devtools-monospace, .cm-editor, .CodeMirror, .message, .tag-line,
+  .ruleview-rule, .requests-list-column, #inspector-breadcrumbs {
+    font-weight: 350;
+    letter-spacing: -0.01em;
+  }
+
+  /* ---------------------------------------------- editor-style tab strip */
+  .devtools-tabbar {
+    background: var(--halo-bg-0) !important;
+    background-image: none !important;
+    min-height: 34px !important;
+    padding-inline: 4px !important;
+  }
+  .toolbox-tabs {
+    padding-block: 0 !important;
+    gap: 0 !important;
+  }
+  .devtools-tab {
+    align-self: stretch !important;
+    min-height: 0 !important;
+    border-radius: 0 !important;
+    padding-inline: 14px !important;
+    color: var(--halo-text-muted) !important;
+    border-inline: 1px solid transparent !important;
+  }
+  .devtools-tab:not(.selected):hover {
+    background-color: rgb(255 255 255 / 0.03) !important;
+  }
+  .devtools-tab.selected,
+  :root[halo-tab-indicator] .devtools-tab.selected {
+    background-color: var(--halo-bg-2) !important;
+    border-inline-color: var(--halo-border) !important;
+    box-shadow: none !important;
+    color: var(--halo-text-strong) !important;
+  }
+  .devtools-tab.selected > img {
+    fill: var(--halo-accent) !important;
+    filter: none !important;
+  }
+  /* the copper→gold line sits on TOP, like an active editor tab */
+  .devtools-tab .devtools-tab-line {
+    display: block !important;
+    top: 0 !important;
+    bottom: auto !important;
+    inset-inline: 0 !important;
+    height: 2px !important;
+    border-radius: 0 !important;
+  }
+  .devtools-tab.selected .devtools-tab-line {
+    background: var(--halo-ember-line) !important;
+    opacity: 1 !important;
+  }
+
+  /* JS indicator: becomes the active tab body and slides between tabs */
+  :root[halo-tab-indicator] .devtools-tab.selected {
+    background-color: transparent !important;
+    border-inline-color: transparent !important;
+  }
+  :root[halo-tab-indicator] .devtools-tab .devtools-tab-line {
+    display: none !important;
+  }
+  .halo-tab-indicator {
+    border-radius: 0 !important;
+    background: var(--halo-bg-2) !important;
+    box-shadow: inset 1px 0 0 var(--halo-border), inset -1px 0 0 var(--halo-border) !important;
+  }
+  .halo-tab-indicator::after {
+    top: 0 !important;
+    bottom: auto !important;
+    left: 0 !important;
+    width: 100% !important;
+    margin-left: 0 !important;
+    border-radius: 0 !important;
+    background: var(--halo-ember-line) !important;
+  }
+
+  .toolbox-error {
+    background-color: transparent !important;
+    color: var(--halo-red) !important;
+    font-weight: 600 !important;
+  }
+  .toolbox-error::before {
+    fill: var(--halo-red) !important;
+  }
+
+  /* -------------------------------------------------- toolbars & inputs */
+  .devtools-toolbar {
+    background: var(--halo-bg-2) !important;
+  }
+  .devtools-searchinput, .devtools-filterinput, .devtools-textinput,
+  .devtools-searchbox input, .search-field input, .devtools-input {
+    background-color: var(--halo-bg-1) !important;
+    border: 1px solid var(--halo-border) !important;
+    border-radius: 5px !important;
+  }
+  .devtools-searchinput:focus, .devtools-filterinput:focus, .devtools-textinput:focus,
+  .devtools-searchbox input:focus, .search-field input:focus {
+    border-color: color-mix(in oklab, var(--halo-accent) 60%, var(--halo-border)) !important;
+    box-shadow: none !important;
+  }
+
+  .tabs .tabs-menu-item .devtools-tab-line {
+    bottom: 0 !important;
+    inset-inline: 0 !important;
+    border-radius: 0 !important;
+  }
+  .tabs .tabs-menu-item.is-active .devtools-tab-line {
+    background: var(--halo-ember-line) !important;
+  }
+
+  /* ---------------------------------------------------------- console */
+  .webconsole-output .message {
+    --halo-gutter: 30px;
+    background-image: linear-gradient(90deg, var(--halo-bg-0) var(--halo-gutter), var(--halo-border) var(--halo-gutter), var(--halo-border) calc(var(--halo-gutter) + 1px), transparent calc(var(--halo-gutter) + 1px)) !important;
+    background-repeat: no-repeat !important;
+    background-size: 100% 100% !important;
+    border-color: transparent !important;
+    padding-inline-start: 4px !important;
+  }
+  .message > .icon {
+    margin-inline-end: 12px !important;
+  }
+  .message.warn {
+    background-color: var(--theme-warning-background) !important;
+  }
+  .message.error {
+    background-color: var(--theme-error-background) !important;
+  }
+  .message:hover {
+    background-color: rgb(255 255 255 / 0.025) !important;
+  }
+
+  .devtools-togglebutton,
+  .webconsole-filterbar-primary .devtools-togglebutton {
+    border-radius: 5px !important;
+    border: none !important;
+    background-color: transparent !important;
+  }
+  .devtools-togglebutton[aria-pressed="true"],
+  .webconsole-filterbar-primary .devtools-togglebutton[aria-pressed="true"] {
+    background-color: var(--halo-surface-2) !important;
+    color: var(--halo-text-strong) !important;
+  }
+  .devtools-togglebutton[data-category="error"][aria-pressed="true"] { color: var(--halo-red) !important; }
+  .devtools-togglebutton[data-category="warn"][aria-pressed="true"] { color: var(--halo-amber) !important; }
+
+  .jsterm-input-container {
+    border-top: 1px solid var(--halo-border) !important;
+    background: var(--halo-bg-1) !important;
+    box-shadow: none !important;
+  }
+  .jsterm-input-container:focus-within {
+    border-top-color: color-mix(in oklab, var(--halo-accent) 60%, var(--halo-border)) !important;
+  }
+
+  /* -------------------------------------------------------- inspector */
+  #root-wrapper .children {
+    margin-inline-start: 9px !important;
+    border-inline-start: 1px solid var(--halo-border);
+  }
+  .tag-line .tag-state.theme-selected {
+    background-image: linear-gradient(90deg, color-mix(in oklab, var(--halo-accent) 24%, transparent), color-mix(in oklab, var(--halo-accent) 4%, transparent)) !important;
+    background-size: 100% 100% !important;
+    background-color: transparent !important;
+  }
+  .tag-line .theme-selected ~ .editor {
+    color: var(--halo-text-strong) !important;
+  }
+
+  .inspector-badge, .markup-badge {
+    border-radius: 4px !important;
+    background: color-mix(in oklab, var(--halo-accent) 14%, transparent) !important;
+    border-color: transparent !important;
+    color: var(--halo-accent-text) !important;
+  }
+
+  /* Breadcrumbs → IDE status bar */
+  #inspector-breadcrumbs-toolbar {
+    background: var(--halo-bg-0) !important;
+    border-top-color: var(--halo-border) !important;
+  }
+  #inspector-breadcrumbs, #inspector-breadcrumbs .breadcrumbs-widget-item {
+    font-family: var(--halo-font-mono) !important;
+    font-size: 10.5px !important;
+  }
+  #inspector-breadcrumbs .breadcrumbs-widget-item {
+    color: var(--halo-text-muted) !important;
+  }
+  #inspector-breadcrumbs .breadcrumbs-widget-item[checked],
+  #inspector-breadcrumbs .breadcrumbs-widget-item[checked] * {
+    color: var(--halo-accent-text) !important;
+  }
+
+  /* Rules: flat hairline list, editor-style */
+  #ruleview-container, .ruleview {
+    background: var(--halo-bg-1) !important;
+  }
+  .ruleview-rule {
+    margin: 0 !important;
+    padding: 6px 14px !important;
+    border: none !important;
+    border-bottom: 1px solid var(--halo-border) !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+  }
+  .ruleview-rule:hover {
+    background: rgb(255 255 255 / 0.02) !important;
+  }
+
+  /* ------------------------------------------------ network & debugger */
+  .request-list-item {
+    height: 22px !important;
+  }
+  .request-list-item.selected {
+    background-image: linear-gradient(90deg, color-mix(in oklab, var(--halo-accent) 22%, transparent), color-mix(in oklab, var(--halo-accent) 5%, transparent)) !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+  }
+  .status-code {
+    border-radius: 4px !important;
+  }
+  .source-tab {
+    border-radius: 0 !important;
+  }
+  .source-tab.active {
+    background-color: var(--halo-bg-1) !important;
+    box-shadow: inset 0 2px 0 var(--halo-accent) !important;
+  }
+  .cm-gutters, .CodeMirror-gutters {
+    background: var(--halo-bg-1) !important;
+    border-inline-end-color: #221d19 !important;
+  }
+  .cm-lineNumbers .cm-gutterElement, .CodeMirror-linenumber {
+    color: #5a4d42 !important;
+  }
+  .cm-activeLineGutter {
+    color: var(--halo-accent-text) !important;
+  }
+
+  .halo-toast {
+    border-radius: 6px !important;
+  }
+}

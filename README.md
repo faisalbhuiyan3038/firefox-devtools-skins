@@ -1,14 +1,22 @@
 # Halo DevTools
 
-A full redesign of the Firefox DevTools: a graphite palette with one accent colour, the **Geist** / **Geist Mono** typefaces, pill tabs with a sliding indicator, calmer toolbars, card-style CSS rules, status-code pills and short eased motion. A small privileged JS module adds a few UI mods on top. **Every part is a switch in `about:config`** and applies live, with no restart.
+A full redesign of the Firefox DevTools with **five switchable looks**. Pick one with a single `about:config` pref. Every other part of the theme is also a pref, and every change applies live, with no restart. A small privileged JS module adds UI mods on top.
 
-Tested on Firefox 160 (Windows) in dark and light DevTools themes. See [Testing](#testing).
+Tested on Firefox 160 (Windows) with the real browser. See [Testing](#testing).
 
-| Dark · Console | Dark · Inspector |
+## Presets
+
+Set `halo.devtools.preset` to one of these names. <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> cycles through them.
+
+| | |
 |---|---|
-| ![](docs/dark-webconsole.png) | ![](docs/dark-inspector.png) |
-| **Dark · Network** | **Light · Inspector** |
-| ![](docs/dark-netmonitor.png) | ![](docs/light-inspector.png) |
+| **`halo`** (default): graphite with a violet accent, Geist and Geist Mono. Pill tabs with a sliding indicator, coloured stripes on warnings and errors, CSS rules as cards. **Follows DevTools light/dark.** | ![](docs/halo.png) |
+| **`glass`**: floating rounded panels over an aurora gradient, a segmented tab control, frosted fields, console rows as rounded chips. Manrope and Fira Code. Dark only. | ![](docs/glass.png) |
+| **`ember`**: a warm, dense IDE look. Flat editor tabs with a copper-to-gold top line, an icon gutter in the console, indent guides in the HTML tree, breadcrumbs as a status bar, CSS rules as a flat list. Instrument Sans and Martian Mono. Dark only. | ![](docs/ember.png) |
+| **`terminal`**: phosphor text on black. `[ bracket ]` tabs with the selected one inverted, `[x]` filter toggles, dashed lines, square corners, glowing text and scanlines. JetBrains Mono everywhere. Dark only. Changing the accent re-tints all the text (amber shown below). | ![](docs/terminal.png) ![](docs/terminal-amber.png) |
+| **`daylight`**: solid panels floating on a cool canvas with soft shadows, cobalt pill tabs, tinted chips for errors and warnings. Figtree and DM Mono. **Follows DevTools light/dark** (light shown first, then dark). | ![](docs/daylight-light.png) ![](docs/daylight-dark.png) |
+
+"Dark only" presets force dark colours even when DevTools is set to light, because their look depends on a dark background. An unknown preset name falls back to plain Halo.
 
 ## Install
 
@@ -25,107 +33,130 @@ Close Firefox before running it, so the default prefs can be seeded into `prefs.
 - enables `toolkit.legacyUserProfileCustomizations.stylesheets`,
 - seeds every `halo.devtools.*` pref once, without overwriting values you already have.
 
-To install by hand, do the same steps and set the prefs from [`user.js`](user.js) once in about:config.
-
-Every module file is wrapped in `@-moz-document url-prefix("chrome://devtools/")…`, so nothing leaks into web pages.
+The presets work CSS-only. They are chosen with `-moz-pref("halo.devtools.preset", "<name>")`, which Firefox 160 supports for string prefs. Every file is wrapped in `@-moz-document url-prefix("chrome://devtools/")…`, so nothing leaks into web pages.
 
 ### 2. JS mods (optional)
 
-The JS module needs an autoconfig loader, which runs privileged code at startup. Use one of these:
+The JS module needs an autoconfig loader. Use one of these:
 
 - **No loader yet:** copy `loader/config.js` next to `firefox.exe` and `loader/defaults/pref/config-prefs.js` into `<install>/defaults/pref/`. This needs admin rights.
-- **Already have a `config.js`** (fx-autoconfig, Sine, a custom one): don't replace it. Append the `try { … }` block from [`loader/config.js`](loader/config.js) to your file.
-- **fx-autoconfig:** alternatively, copy `chrome/halo/js/halo.sys.mjs` into `chrome/JS/`. It is self-contained and has a UserScript header.
+- **Already have a `config.js`** (fx-autoconfig, Sine, a custom one): append the `try { … }` block from [`loader/config.js`](loader/config.js) to your file.
+- **fx-autoconfig:** alternatively, copy `chrome/halo/js/halo.sys.mjs` into `chrome/JS/`.
 
-With the module loaded, all `halo.devtools.*` prefs are registered as defaults. They show up in about:config even without seeding, and "Reset" restores them.
+With the module loaded, every `halo.devtools.*` pref is registered as a default. They show up in about:config even without seeding, and "Reset" restores them.
 
 ## about:config switches
 
-All prefs apply live to open toolboxes.
+All of these apply live.
 
-### CSS modules (bool)
+### Look
 
 | Pref | Default | What it does |
 |---|---|---|
 | `halo.devtools.enabled` | `true` | Master switch for everything |
-| `halo.devtools.palette` | `true` | Graphite palette (remaps Firefox's `--theme-*` vars, so unstyled panels follow) |
-| `halo.devtools.font` | `true` | Geist for the UI |
-| `halo.devtools.mono-font` | `true` | Geist Mono for code, console, markup and rules |
-| `halo.devtools.tabs` | `true` | Pill toolbox tabs, accent underline, restyled sidebar tabs |
-| `halo.devtools.toolbars` | `true` | Rounded inputs and buttons, hairline splitters, popups, notification bars |
-| `halo.devtools.console` | `true` | Severity rail on warnings and errors, pill filter chips, focused input line |
-| `halo.devtools.inspector` | `true` | Soft markup selection, rules as cards, badges |
-| `halo.devtools.debugger` | `true` | CodeMirror gutter, cursor and selection; editor tabs; paused line |
-| `halo.devtools.netmonitor` | `true` | Airier rows, status-code pills, accent selection |
-| `halo.devtools.scrollbars` | `true` | Thin, low-contrast scrollbars |
-| `halo.devtools.motion` | `true` | Eased transitions, panel fade-in, popup scale-in. Respects reduced motion |
-| `halo.devtools.glow` | `true` | Faint accent wash on the tab strip, focus halos |
-| `halo.devtools.compact` | `false` | Denser tab strip, rows and rules |
+| `halo.devtools.preset` | `"halo"` | `halo` · `glass` · `ember` · `terminal` · `daylight` |
+| `halo.devtools.accent` | `""` | Empty uses the preset's own accent. Also accepts `violet` `blue` `cyan` `green` `amber` `rose` `mono` or any CSS colour (needs JS) |
+| `halo.devtools.compact` | `false` | Denser layout. Every preset has a compact layout that is tested |
+| `halo.devtools.terminal.scanlines` | `true` | Terminal preset: the scanline and vignette overlay |
+
+### Modules (bool, all default `true`)
+
+These apply to every preset. Turning one off returns that area to stock Firefox styling.
+
+| Pref | What it does |
+|---|---|
+| `halo.devtools.palette` | Recolours Firefox's own colour variables, so even panels the theme doesn't style directly follow the preset |
+| `halo.devtools.font` / `halo.devtools.mono-font` | The preset's interface font / code font |
+| `halo.devtools.tabs` | Toolbox and sidebar tab styling |
+| `halo.devtools.toolbars` | Inputs, buttons, splitters, popups, notification bars |
+| `halo.devtools.console` / `inspector` / `debugger` / `netmonitor` | Per-panel styling |
+| `halo.devtools.scrollbars` | Thin scrollbars |
+| `halo.devtools.motion` | Transitions, panel fade-in, popup scale-in. Respects reduced motion |
+| `halo.devtools.glow` | Accent glow, and the text glow in Terminal |
 
 ### JS mods (need the loader)
 
 | Pref | Type | Default | What it does |
 |---|---|---|---|
-| `halo.devtools.js.enabled` | bool | `true` | Master switch for all JS mods (CSS keeps working without them) |
-| `halo.devtools.accent` | string | `violet` | `violet` `blue` `cyan` `green` `amber` `rose` `mono`, or any CSS colour (`#22c55e`, `oklch(…)`) |
-| `halo.devtools.ui-font-size` | int | `12` | UI text size in px (8–28) |
-| `halo.devtools.code-font-size` | int | `12` | Code text size in px (8–28) |
-| `halo.devtools.ui-font-family` | string | `""` | Override the UI font, e.g. `Inter`. Empty means Geist |
-| `halo.devtools.mono-font-family` | string | `""` | Override the code font, e.g. `"JetBrains Mono"`. Empty means Geist Mono |
-| `halo.devtools.js.tab-indicator` | bool | `true` | One pill that slides (spring-eased) between toolbox tabs |
+| `halo.devtools.js.enabled` | bool | `true` | Master switch for all JS mods. The CSS keeps working without them |
+| `halo.devtools.ui-font-size` / `code-font-size` | int | `12` | Text sizes in px (8–28) |
+| `halo.devtools.ui-font-family` / `mono-font-family` | string | `""` | Override the preset's fonts, e.g. `Inter` or `"JetBrains Mono"` |
+| `halo.devtools.js.tab-indicator` | bool | `true` | The selected-tab shape slides between tabs. Each preset restyles it: a pill, a frosted segment, an editor tab or a phosphor block |
 | `halo.devtools.js.ripple` | bool | `true` | Accent ripple on clicks |
-| `halo.devtools.js.console-copy` | bool | `true` | Hover a console message to get a **Copy** button for its text |
+| `halo.devtools.js.console-copy` | bool | `true` | Hover a console message to get a **Copy** button |
 | `halo.devtools.js.toasts` | bool | `true` | A small toast confirms each `halo.devtools.*` change |
-| `halo.devtools.js.hotkeys` | bool | `true` | Hotkeys, listed below. These still work while the theme is off, so you can turn it back on |
+| `halo.devtools.js.hotkeys` | bool | `true` | The hotkeys listed below |
 
 **Hotkeys** (with DevTools focused): <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>Shift</kbd> and then
 
-- <kbd>H</kbd> toggles the whole theme,
+- <kbd>P</kbd> cycles the preset,
+- <kbd>A</kbd> cycles the accent,
 - <kbd>D</kbd> toggles compact,
 - <kbd>M</kbd> toggles motion,
-- <kbd>A</kbd> cycles the accent.
+- <kbd>H</kbd> toggles the whole theme (it still works while the theme is off).
 
-Without the JS module, the accent defaults to violet and sizes to 12px. You can change those by editing `--halo-accent` in `chrome/halo/modules/tokens.css`.
-
-## Layout
+## How it's built
 
 ```
 chrome/
-  userContent.css          entry point (one @import, gated by halo.devtools.enabled)
+  userContent.css              entry point: one @import gated by halo.devtools.enabled
   halo/
-    halo.css               module index, each @import gated by -moz-pref()
-    modules/*.css          tokens, palette, font, mono, tabs, toolbars, console,
-                           inspector, debugger, netmonitor, scrollbars, motion,
-                           glow, compact, mods (styles for JS-injected UI)
-    js/halo.sys.mjs        JS mods (pref defaults, devtools document watcher, features)
-    chrome.manifest        registers chrome://halo/content/ for the loader
-    fonts/                 Geist + Geist Mono variable woff2 (SIL OFL 1.1, see OFL.txt)
-loader/                    standalone autoconfig loader
-install.ps1                profile installer
-test/                      real-browser harness + fixture page
+    halo.css                   index: tokens → palette → structural modules → JS-UI styles → preset → density
+    modules/*.css              structural modules (each gated by its own pref)
+    presets/<name>.css         one per look: token overrides + signature details + @font-face
+    presets/shared/floating.css  floating-pane layout shared by glass and daylight
+    js/halo.sys.mjs            JS mods: pref defaults, devtools document watcher, features
+    fonts/<preset>/            bundled variable woff2 fonts + their OFL licences
+loader/                        standalone autoconfig loader
+install.ps1                    profile installer
+test/                          real-browser harness + fixture page
 ```
 
-How the JS side works: the module listens for `document-element-inserted` and picks out DevTools documents (the toolbox and each panel iframe, all with the system principal). It attaches a controller to each one and re-syncs every controller when any `halo.devtools.*` pref changes. Injected UI (indicator, ripple, copy button, toast) lives in fixed-position overlays outside React-managed trees, and each feature removes itself cleanly when its pref is turned off.
+- **Every preset uses the same structural modules.** Shared CSS only reads `--halo-*` tokens. A preset overrides those tokens and adds its own signature details. That's why turning a module off, compact density and the JS mods all work under every preset.
+- **Dark-only presets** set `color-scheme: dark !important`. Firefox's own `light-dark()` colours then agree with the preset even when DevTools is in light mode.
+- **Floating panes** (Glass, Daylight): each DevTools panel is a separate iframe. The toolbox therefore paints the canvas, and each panel frame is inset by 8px gutters and clipped to rounded corners. A real backdrop blur across iframes isn't possible, so Glass's "frost" is drawn with white-alpha layers instead.
+- **JS mods** live in fixed-position overlays outside React-managed trees. Each one removes itself cleanly when its pref is turned off.
 
 ## Testing
 
 ```powershell
-python -I test/harness.py --geckodriver C:\path\to\geckodriver.exe
+python -I test/harness.py --geckodriver C:\path\to\geckodriver.exe            # all presets + shared behaviour
+python -I test/harness.py --preset glass --skip-shared --geckodriver ...      # one preset
 ```
 
-The harness builds a throwaway profile from this repo and starts the real Firefox through geckodriver with chrome-context access. It opens the Console, Inspector, Debugger, Network and Style Editor in the dark and light themes and saves screenshots to `test/screenshots/`. It then checks against the live DevTools DOM that:
+The harness builds a throwaway profile from this repo. It starts the real Firefox through geckodriver with chrome-context access (`MOZ_REMOTE_ALLOW_SYSTEM_ACCESS=1`) and runs two kinds of checks against the live DevTools DOM.
 
-- the JS module boots at startup,
-- Geist and Geist Mono are applied and their font files actually render,
-- the tab indicator tracks the selected tab,
-- the master pref and individual prefs toggle CSS and JS live,
-- accent and font size apply live, and the toast shows,
-- compact mode shrinks the strip,
-- the console copy button copies to the clipboard (this overwrites your clipboard),
-- the ripple and hotkeys work,
-- `js.enabled=false` leaves a working CSS-only theme,
-- no runtime errors occur.
+**For each preset:**
+- opens Console, Inspector, Debugger, Network and Style Editor under both DevTools themes, and screenshots each into `test/screenshots/<preset>/`,
+- confirms the preset's stylesheet is active,
+- confirms its fonts are applied and the font files actually render,
+- confirms dark-only presets force dark under DevTools' light theme,
+- runs the preset's signature checks (Glass's 8px gutters and 14px panes, Ember's flat rule list and indent guides, Terminal's bracket tabs and scanline switch, Daylight's light and dark canvases, …),
+- checks that an accent override applies, and that clearing it falls back to the preset's own accent,
+- checks that compact density still fits the tab strip,
+- checks the Inspector with the split console docked underneath.
+
+**Shared behaviour:**
+- live preset switching, and fallback for an unknown preset,
+- the sliding tab indicator,
+- the master and per-module switches,
+- live font size changes and toasts,
+- the console Copy button, including a real clipboard read (this overwrites your clipboard),
+- ripple and hotkeys,
+- a CSS-only run with `js.enabled = false`,
+- no runtime errors.
+
+Current result: **133 checks, 0 failures.**
 
 ## Credits
 
-Geist and Geist Mono © Vercel, SIL Open Font License 1.1 (`chrome/halo/fonts/OFL.txt`).
+Fonts are bundled under the SIL Open Font License 1.1. The licence files are in `chrome/halo/fonts/<preset>/`:
+
+- Geist and Geist Mono (Vercel)
+- Manrope
+- Fira Code
+- Instrument Sans
+- Martian Mono (Evil Martians)
+- JetBrains Mono
+- Figtree
+- DM Mono

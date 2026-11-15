@@ -11,9 +11,10 @@
 user_pref("toolkit.legacyUserProfileCustomizations.stylesheets", true);
 
 user_pref("halo.devtools.enabled", true);                  // Halo theme
+user_pref("halo.devtools.preset", "halo");                 // Theme preset: halo | glass | ember | terminal | daylight
 user_pref("halo.devtools.palette", true);                  // Colour palette
-user_pref("halo.devtools.font", true);                     // Geist UI font
-user_pref("halo.devtools.mono-font", true);                // Geist Mono code font
+user_pref("halo.devtools.font", true);                     // Theme UI font
+user_pref("halo.devtools.mono-font", true);                // Theme code font
 user_pref("halo.devtools.tabs", true);                     // Pill tabs
 user_pref("halo.devtools.toolbars", true);                 // Toolbars & inputs
 user_pref("halo.devtools.console", true);                  // Console styling
@@ -24,9 +25,10 @@ user_pref("halo.devtools.scrollbars", true);               // Slim scrollbars
 user_pref("halo.devtools.motion", true);                   // Motion
 user_pref("halo.devtools.glow", true);                     // Accent glow
 user_pref("halo.devtools.compact", false);                 // Compact density
+user_pref("halo.devtools.terminal.scanlines", true);      // Terminal preset: scanline overlay
 
 user_pref("halo.devtools.js.enabled", true);               // JS mods
-user_pref("halo.devtools.accent", "violet");               // Accent
+user_pref("halo.devtools.accent", "");                     // Accent ("" = preset's own)
 user_pref("halo.devtools.ui-font-size", 12);               // UI font size
 user_pref("halo.devtools.code-font-size", 12);             // Code font size
 user_pref("halo.devtools.ui-font-family", "");             // UI font family

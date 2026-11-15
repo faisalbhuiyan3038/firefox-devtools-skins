@@ -1,0 +1,50 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   PRESET · HALO (refined baseline)  —  halo.devtools.preset = "halo"
+   Graphite + violet, Geist / Geist Mono. Follows the DevTools light/dark
+   setting (tokens.css holds both halves as light-dark() pairs).
+   The base tokens already ARE Halo; this file only adds Halo's signature
+   details so other presets don't inherit them.
+   ═══════════════════════════════════════════════════════════════════════ */
+@-moz-document url-prefix("chrome://devtools/"), url-prefix("about:devtools") {
+
+  :root {
+    --halo-preset: halo;
+  }
+
+  /* Console error count on the tab strip → soft red pill */
+  .toolbox-error {
+    height: 22px !important;
+    padding-inline: 8px 9px !important;
+    margin-inline: 4px !important;
+    border-radius: 999px !important;
+    background-color: color-mix(in oklab, var(--halo-red) 16%, transparent) !important;
+    color: var(--halo-red) !important;
+    font-weight: 600 !important;
+    gap: 4px;
+  }
+  .toolbox-error:hover {
+    background-color: color-mix(in oklab, var(--halo-red) 26%, transparent) !important;
+  }
+  .toolbox-error::before {
+    fill: var(--halo-red) !important;
+  }
+
+  /* Active markup badges (grid / flex / event) fill with the accent */
+  .inspector-badge.active, .markup-badge.active {
+    box-shadow: 0 0 0 3px var(--halo-accent-softer);
+  }
+
+  /* Console input: an accent hairline marks the prompt, brighter on focus */
+  .jsterm-input-container {
+    border-top-color: color-mix(in oklab, var(--halo-accent) 35%, var(--halo-border)) !important;
+  }
+  .jsterm-input-container:focus-within {
+    border-top-color: var(--halo-accent) !important;
+  }
+
+  /* Rule cards lift slightly when you work in them */
+  .ruleview-rule:focus-within {
+    border-color: var(--halo-accent-line) !important;
+    box-shadow: 0 0 0 3px var(--halo-accent-softer);
+  }
+}

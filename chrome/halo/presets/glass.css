@@ -1,0 +1,303 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   PRESET · GLASS / SPATIAL  —  halo.devtools.preset = "glass"
+   Floating rounded panes over an aurora gradient, a segmented tab control,
+   frosted fields. Manrope + Fira Code. Dark-only: forces color-scheme dark
+   so Firefox's own light-dark() colours agree with the panes.
+
+   How the "glass" is built (DevTools panels are separate iframes, so a real
+   backdrop blur across them is impossible):
+     · the toolbox document paints the aurora; it shows in the tab strip and
+       in the 8px gutters around each pane,
+     · every panel iframe is inset by those gutters and clipped to 14px
+       corners, with a soft drop shadow and a 1px inner highlight,
+     · inside the panes, all hover/selection/field fills are white-alpha
+       layers, so they read as frosted rather than flat.
+   ═══════════════════════════════════════════════════════════════════════ */
+@import url("shared/floating.css");
+
+@-moz-document url-prefix("chrome://devtools/"), url-prefix("about:devtools") {
+
+  @font-face {
+    font-family: "Halo Manrope";
+    src: url("../fonts/glass/Manrope-Variable.woff2") format("woff2");
+    font-weight: 200 800;
+    font-display: block;
+  }
+  @font-face {
+    font-family: "Halo Fira Code";
+    src: url("../fonts/glass/FiraCode-Variable.woff2") format("woff2");
+    font-weight: 300 700;
+    font-display: block;
+  }
+
+  /* ---------------------------------------------------------- tokens */
+  :root {
+    --halo-preset: glass;
+    color-scheme: dark !important;
+
+    --halo-aurora-a: #6a5cff;
+    --halo-aurora-b: #00b4d8;
+    --halo-aurora:
+      radial-gradient(45% 120% at 4% 0%, color-mix(in oklab, var(--halo-aurora-a) 85%, transparent), transparent 75%),
+      radial-gradient(40% 110% at 58% 0%, color-mix(in oklab, #c04cff 45%, transparent), transparent 70%),
+      radial-gradient(50% 90% at 98% 100%, color-mix(in oklab, var(--halo-aurora-b) 75%, transparent), transparent 75%),
+      radial-gradient(40% 70% at 0% 100%, color-mix(in oklab, var(--halo-aurora-b) 35%, transparent), transparent 70%),
+      #0a0c18;
+
+    --halo-accent: #8fb4ff;
+    --halo-accent-fg: #0a0c18;
+    --halo-accent-text: #b9cfff;
+
+    --halo-bg-0: transparent;
+    --halo-bg-1: #12152a;
+    --halo-bg-2: #0f1225;
+    --halo-surface: rgb(255 255 255 / 0.06);
+    --halo-surface-2: rgb(255 255 255 / 0.10);
+    --halo-surface-3: rgb(255 255 255 / 0.16);
+    --halo-border: rgb(255 255 255 / 0.07);
+    --halo-border-strong: rgb(255 255 255 / 0.13);
+    --halo-text: #dfe4f2;
+    --halo-text-strong: #ffffff;
+    --halo-text-muted: #a9b1c9;
+    --halo-text-dim: #737c9a;
+
+    --halo-red: #ff6b93;
+    --halo-amber: #ffc45c;
+    --halo-green: #8ff0bf;
+    --halo-blue: #8cc8ff;
+    --halo-cyan: #7fe3f0;
+
+    --halo-radius-sm: 7px;
+    --halo-radius: 9px;
+    --halo-radius-lg: 14px;
+    --halo-shadow-pop: 0 18px 40px -12px rgb(0 0 0 / 0.65), inset 0 1px 0 rgb(255 255 255 / 0.10);
+    --halo-glass-edge: inset 0 1px 0 rgb(255 255 255 / 0.09), 0 0 0 1px rgb(255 255 255 / 0.07);
+
+    /* shared/floating.css */
+    --halo-canvas: var(--halo-aurora);
+    --halo-pane-radius: 14px;
+    --halo-pane-shadow: var(--halo-glass-edge), 0 20px 40px -20px rgb(0 0 0 / 0.6);
+
+    --halo-font-ui: var(--halo-ui-font-override, "Halo Manrope"), "Segoe UI Variable Text", system-ui, sans-serif;
+    --halo-font-mono: var(--halo-mono-font-override, "Halo Fira Code"), "Cascadia Code", Consolas, monospace;
+  }
+
+  :root:not([forced-colors-active]) {
+    --theme-highlight-blue: #8cc8ff !important;
+    --theme-highlight-red: #f0a6ff !important;
+    --theme-highlight-orange: #ffd29a !important;
+    --theme-highlight-lightorange: #ffd29a !important;
+    --theme-highlight-green: #a6f0c6 !important;
+    --theme-highlight-purple: #c9b5ff !important;
+    --theme-highlight-pink: #f0a6ff !important;
+    --theme-highlight-bluegrey: #a9b8de !important;
+    --theme-comment: #6f7896 !important;
+    --theme-selection-background: rgb(255 255 255 / 0.16) !important;
+    --theme-selection-color: #ffffff !important;
+    --theme-popup-background: #1a1e36 !important;
+    --theme-warning-background: color-mix(in oklab, var(--halo-amber) 12%, var(--halo-bg-1)) !important;
+    --theme-error-background: color-mix(in oklab, var(--halo-red) 13%, var(--halo-bg-1)) !important;
+    --theme-warning-color: #ffd99a !important;
+    --theme-error-color: #ffc0cf !important;
+  }
+
+  /* ---------------------------------------------------- toolbox shell */
+  .devtools-tabbar {
+    min-height: 42px !important;
+    padding-inline: 8px !important;
+  }
+
+  /* Segmented control: the tab group sits in one frosted capsule that
+     hugs its tabs instead of stretching across the strip. */
+  .toolbox-tabs {
+    top: 5px !important;
+    bottom: 5px !important;
+    right: auto !important;
+    max-width: 100%;
+    width: max-content;
+    padding: 3px !important;
+    gap: 2px !important;
+    border-radius: 12px;
+    background: rgb(255 255 255 / 0.06);
+    box-shadow: var(--halo-glass-edge);
+  }
+  .devtools-tab {
+    min-height: 0 !important;
+    align-self: stretch !important;   /* segments fill the capsule height */
+    border-radius: 9px !important;
+    padding-inline: 12px 14px !important;
+    color: #b7bfd6 !important;
+  }
+  .devtools-tab:not(.selected):hover {
+    background-color: rgb(255 255 255 / 0.06) !important;
+  }
+  .devtools-tab.selected {
+    background-color: rgb(255 255 255 / 0.16) !important;
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.25), 0 4px 14px -4px rgb(0 0 0 / 0.5) !important;
+    color: #ffffff !important;
+  }
+  .devtools-tab.selected > img {
+    fill: #ffffff !important;
+    filter: none !important;
+  }
+  .devtools-tab .devtools-tab-line {
+    display: none !important;
+  }
+
+  /* Compact density: a slimmer strip and capsule (compact.css loads after
+     presets, so these use one extra :root of specificity to win). */
+  @media (-moz-pref("halo.devtools.compact")) {
+    :root .devtools-tabbar { min-height: 32px !important; }
+    :root .toolbox-tabs { top: 3px !important; bottom: 3px !important; padding: 2px !important; }
+    :root .devtools-tab { min-height: 0 !important; padding-inline: 10px 11px !important; }
+  }
+
+  /* Sliding indicator = the selected segment */
+  .halo-tab-indicator {
+    border-radius: 9px !important;
+    background: rgb(255 255 255 / 0.16) !important;
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.25), 0 4px 14px -4px rgb(0 0 0 / 0.5) !important;
+  }
+  .halo-tab-indicator::after {
+    display: none;
+  }
+
+  .devtools-tabbar-button,
+  #toolbox-controls > button {
+    border-radius: 10px !important;
+  }
+  .devtools-tabbar-button:hover:not(:disabled) {
+    background-color: rgb(255 255 255 / 0.08) !important;
+  }
+
+  .toolbox-error {
+    height: 26px !important;
+    padding-inline: 9px 10px !important;
+    margin-inline: 6px !important;
+    border-radius: 999px !important;
+    background-color: rgb(255 92 138 / 0.16) !important;
+    box-shadow: 0 0 0 1px rgb(255 92 138 / 0.3);
+    color: #ffb3c6 !important;
+    font-weight: 600 !important;
+  }
+
+  .notificationbox .notification[data-type="info"],
+  .notificationbox .notification[data-type="new"] {
+    background-color: rgb(255 255 255 / 0.05) !important;
+    border-color: transparent !important;
+  }
+
+  /* ------------------------------------------------------ inside panes */
+  :root:not(:has(#toolbox-container)) .devtools-toolbar,
+  .devtools-toolbar {
+    background: transparent !important;
+  }
+  .theme-body, .theme-sidebar {
+    background-image:
+      radial-gradient(70% 60% at 0% 0%, color-mix(in oklab, var(--halo-aurora-a) 9%, transparent), transparent 70%),
+      radial-gradient(60% 60% at 100% 100%, color-mix(in oklab, var(--halo-aurora-b) 7%, transparent), transparent 70%) !important;
+    background-attachment: fixed !important;
+  }
+
+  .devtools-searchinput, .devtools-filterinput, .devtools-textinput,
+  .devtools-searchbox input, .search-field input, .devtools-input {
+    background-color: rgb(0 0 0 / 0.25) !important;
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.07) !important;
+    border-color: transparent !important;
+    border-radius: 9px !important;
+  }
+  .devtools-searchinput:focus, .devtools-filterinput:focus, .devtools-textinput:focus,
+  .devtools-searchbox input:focus, .search-field input:focus {
+    background-color: rgb(0 0 0 / 0.32) !important;
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.18), 0 0 0 3px rgb(143 180 255 / 0.15) !important;
+  }
+
+  /* Sidebar tabs: small frosted pills instead of underlines */
+  .tabs .tabs-navigation {
+    background: transparent !important;
+    border-bottom-color: var(--halo-border) !important;
+  }
+  .tabs .tabs-menu-item {
+    margin-block: 4px !important;
+    border-radius: 8px !important;
+  }
+  .tabs .tabs-menu-item.is-active {
+    background: rgb(255 255 255 / 0.12) !important;
+  }
+  .tabs .tabs-menu-item .devtools-tab-line {
+    display: none !important;
+  }
+
+  /* Console: rows become rounded chips */
+  .webconsole-output .message {
+    border-radius: 7px;
+    border-color: transparent !important;
+    margin-inline: 6px !important;
+    width: calc(100% - 12px) !important;
+  }
+  .message.error, .message.warn {
+    background-image: none !important;
+  }
+  .message.warn {
+    background-color: rgb(255 196 92 / 0.12) !important;
+    box-shadow: inset 0 0 0 1px rgb(255 196 92 / 0.2);
+  }
+  .message.error {
+    background-color: rgb(255 92 138 / 0.13) !important;
+    box-shadow: inset 0 0 0 1px rgb(255 92 138 / 0.24);
+  }
+  .message:hover {
+    background-color: rgb(255 255 255 / 0.05) !important;
+  }
+  .devtools-togglebutton[aria-pressed="true"] {
+    background-color: rgb(255 255 255 / 0.14) !important;
+    border-color: transparent !important;
+    color: #ffffff !important;
+  }
+  .jsterm-input-container {
+    margin: 6px 8px 8px !important;
+    border: none !important;
+    border-radius: 9px !important;
+    background: rgb(0 0 0 / 0.28) !important;
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.08) !important;
+  }
+  .jsterm-input-container:focus-within {
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.18), 0 0 0 3px rgb(143 180 255 / 0.15) !important;
+  }
+
+  /* Inspector */
+  .tag-line .tag-state.theme-selected {
+    background-color: rgb(255 255 255 / 0.12) !important;
+    background-image: none !important;
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.18);
+    border-radius: 8px;
+  }
+  .ruleview-rule {
+    border-radius: 10px !important;
+    background: rgb(0 0 0 / 0.22) !important;
+    border-color: rgb(255 255 255 / 0.06) !important;
+  }
+  .inspector-badge, .markup-badge {
+    background: rgb(255 255 255 / 0.10) !important;
+    border-color: transparent !important;
+    color: #ffffff !important;
+  }
+
+  /* Network + debugger selection */
+  .request-list-item.selected,
+  .frames [role="listitem"].selected, .frames .frame.selected,
+  .sources-list .tree .node.focused {
+    background-color: rgb(255 255 255 / 0.12) !important;
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.15) !important;
+  }
+  .source-tab.active {
+    background-color: rgb(255 255 255 / 0.08) !important;
+    box-shadow: inset 0 -2px 0 var(--halo-accent) !important;
+  }
+
+  /* Toast / copy button get the frosted treatment too */
+  .halo-toast {
+    background: rgb(26 30 54 / 0.92) !important;
+    border-color: rgb(255 255 255 / 0.12) !important;
+  }
+}

@@ -22,9 +22,10 @@ const PREFIX = "halo.devtools.";
 /** name → [default, label]. Booleans without "js." are read by the CSS. */
 const PREFS = {
   "enabled":          [true,  "Halo theme"],
+  "preset":           ["halo", "Theme preset"],
   "palette":          [true,  "Colour palette"],
-  "font":             [true,  "Geist UI font"],
-  "mono-font":        [true,  "Geist Mono code font"],
+  "font":             [true,  "Theme UI font"],
+  "mono-font":        [true,  "Theme code font"],
   "tabs":             [true,  "Pill tabs"],
   "toolbars":         [true,  "Toolbars & inputs"],
   "console":          [true,  "Console styling"],
@@ -35,9 +36,10 @@ const PREFS = {
   "motion":           [true,  "Motion"],
   "glow":             [true,  "Accent glow"],
   "compact":          [false, "Compact density"],
+  "terminal.scanlines": [true, "Terminal scanlines"],
 
   "js.enabled":       [true,  "JS mods"],
-  "accent":           ["violet", "Accent"],
+  "accent":           ["",    "Accent"],
   "ui-font-size":     [12,    "UI font size"],
   "code-font-size":   [12,    "Code font size"],
   "ui-font-family":   ["",    "UI font family"],
@@ -59,7 +61,11 @@ const ACCENTS = {
   rose:   ["#e11d48", "#ff8aa5"],
   mono:   ["#3f4456", "#d6dbe6"],
 };
-const ACCENT_ORDER = Object.keys(ACCENTS);
+// "" = the active preset's own accent.
+const ACCENT_ORDER = ["", ...Object.keys(ACCENTS)];
+
+/** Presets that ship a presets/<name>.css. Ctrl+Alt+Shift+P cycles them. */
+const PRESETS = ["halo", "glass", "ember", "terminal", "daylight"];
 
 const errors = [];
 function report(where, e) {
@@ -311,7 +317,8 @@ FEATURES.toasts = {
       let shown = value;
       if (typeof value === "boolean") shown = value ? "On" : "Off";
       else if (name.endsWith("font-size")) shown = `${value}px`;
-      else if (value === "") shown = "Default";
+      else if (value === "") shown = name === "accent" ? "Preset default" : "Default";
+      else if (name === "preset") shown = String(value).charAt(0).toUpperCase() + String(value).slice(1);
       toast.replaceChildren(
         el(doc, "span", "halo-toast-dot"),
         el(doc, "span", "halo-toast-label", label),
@@ -351,6 +358,11 @@ FEATURES.hotkeys = {
           setPref("accent", ACCENT_ORDER[(i + 1) % ACCENT_ORDER.length]);
           break;
         }
+        case "KeyP": {
+          const i = PRESETS.indexOf(pref("preset"));
+          setPref("preset", PRESETS[(i + 1) % PRESETS.length]);
+          break;
+        }
         default: handled = false;
       }
       if (handled) {
@@ -368,12 +380,14 @@ FEATURES.hotkeys = {
 const VAR_NAMES = ["--halo-accent", "--halo-ui-font-size", "--halo-code-font-size",
                    "--halo-ui-font-override", "--halo-mono-font-override"];
 
+/** null = leave the accent to the active preset's CSS. */
 function resolveAccent(win, value) {
   const v = String(value || "").trim().toLowerCase();
-  const named = ACCENTS[v] || (v ? null : ACCENTS.violet);
+  if (!v) return null;
+  const named = ACCENTS[v];
   if (named) return `light-dark(${named[0]}, ${named[1]})`;
   if (win.CSS.supports("color", value)) return String(value).trim();
-  return `light-dark(${ACCENTS.violet[0]}, ${ACCENTS.violet[1]})`;
+  return null;
 }
 
 function clampSize(n, fallback) {
@@ -388,7 +402,9 @@ function applyVars({ doc, win }, on) {
     for (const v of VAR_NAMES) s.removeProperty(v);
     return;
   }
-  s.setProperty("--halo-accent", resolveAccent(win, pref("accent")));
+  const accent = resolveAccent(win, pref("accent"));
+  if (accent) s.setProperty("--halo-accent", accent);
+  else s.removeProperty("--halo-accent");
   s.setProperty("--halo-ui-font-size", `${clampSize(pref("ui-font-size"), 12)}px`);
   s.setProperty("--halo-code-font-size", `${clampSize(pref("code-font-size"), 12)}px`);
   for (const [p, v] of [["ui-font-family", "--halo-ui-font-override"], ["mono-font-family", "--halo-mono-font-override"]]) {
@@ -535,8 +551,9 @@ function init() {
 init();
 
 export const Halo = {
-  version: "1.0.0",
+  version: "1.1.0",
   PREFS,
+  PRESETS,
   ACCENTS,
   errors,
   controllers,

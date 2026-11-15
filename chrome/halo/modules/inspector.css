@@ -13,8 +13,10 @@
   }
   .tag-line[selected] .tag-state.theme-selected,
   .tag-line .tag-state.theme-selected {
-    background-color: var(--halo-accent-soft) !important;
-    box-shadow: inset 2px 0 0 var(--halo-accent);
+    background-color: color-mix(in oklab, var(--halo-accent) 20%, transparent) !important;
+    background-image: linear-gradient(var(--halo-accent), var(--halo-accent)) !important;
+    background-size: 2px 100% !important;
+    background-repeat: no-repeat !important;
   }
   .tag-line[selected] .theme-selected ~ .editor :is(.tag, .attr-name, .attr-value, .theme-fg-color3) ,
   .tag-line .theme-selected ~ .editor * {
