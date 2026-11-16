@@ -45,6 +45,18 @@ The JS module needs an autoconfig loader. Use one of these:
 
 With the module loaded, every `halo.devtools.*` pref is registered as a default. They show up in about:config even without seeding, and "Reset" restores them.
 
+## Settings page
+
+With the JS module loaded through `loader/config.js`, every switch below also has a settings page:
+
+- **Tools › Halo DevTools Settings** (press <kbd>Alt</kbd> to show the menu bar),
+- <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>O</kbd> with DevTools focused,
+- or open `chrome://halo/content/options/options.html`.
+
+It has a preset picker, accent swatches with a custom colour field, font sizes and families, and a toggle for every module and JS mod. There's also a filter, a per-setting Reset, "Reset all to defaults", and a list of any errors from this session. The page is only a view over the prefs: changes apply live, and edits made in about:config show up on it straight away. Invalid input (an unknown colour, an unsafe font name) is never saved.
+
+The page is served from `chrome/halo/js/options/` through `chrome/halo/chrome.manifest`. The "copy `halo.sys.mjs` into `chrome/JS/`" fx-autoconfig route doesn't register that manifest, so it has no settings page.
+
 ## about:config switches
 
 All of these apply live.
@@ -94,7 +106,8 @@ These apply to every preset. Turning one off returns that area to stock Firefox 
 - <kbd>A</kbd> cycles the accent,
 - <kbd>D</kbd> toggles compact,
 - <kbd>M</kbd> toggles motion,
-- <kbd>H</kbd> toggles the whole theme (it still works while the theme is off).
+- <kbd>H</kbd> toggles the whole theme (it still works while the theme is off),
+- <kbd>O</kbd> opens the settings page.
 
 ## How it's built
 
@@ -106,7 +119,8 @@ chrome/
     modules/*.css              structural modules (each gated by its own pref)
     presets/<name>.css         one per look: token overrides + signature details + @font-face
     presets/shared/floating.css  floating-pane layout shared by glass and daylight
-    js/halo.sys.mjs            JS mods: pref defaults, devtools document watcher, features
+    js/halo.sys.mjs            JS mods: pref defaults, devtools document watcher, features, Tools menu item
+    js/options/                settings page (chrome://halo/content/options/options.html)
     fonts/<preset>/            bundled variable woff2 fonts + their OFL licences
 loader/                        standalone autoconfig loader
 install.ps1                    profile installer

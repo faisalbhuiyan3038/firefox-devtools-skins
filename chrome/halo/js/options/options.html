@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<!-- Halo DevTools settings (privileged chrome document). A thin view over halo.devtools.* prefs. -->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src chrome:; img-src chrome: data:; style-src chrome: 'unsafe-inline'; object-src 'none'">
+  <meta name="color-scheme" content="light dark">
+  <title>Halo DevTools Settings</title>
+  <link rel="stylesheet" href="chrome://halo/content/options/options.css">
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <span class="logo" aria-hidden="true"></span>
+      <div>
+        <h1>Halo DevTools</h1>
+        <p class="sub">Every switch is a <code>halo.devtools.*</code> pref. Changes apply live to open DevTools windows.</p>
+      </div>
+    </div>
+    <div class="bar">
+      <label class="master switch-row">
+        <input type="checkbox" class="switch" id="master">
+        <span>Theme on <code>halo.devtools.enabled</code></span>
+      </label>
+      <input type="search" id="filter" placeholder="Filter settings" aria-label="Filter settings">
+      <button type="button" id="reset-all">Reset all to defaults</button>
+      <span id="summary" role="status"></span>
+    </div>
+  </header>
+  <main id="sections"></main>
+  <section id="errors" hidden>
+    <h2>Errors this session</h2>
+    <pre id="error-list"></pre>
+  </section>
+  <section id="reference">
+    <h2>Hotkeys</h2>
+    <p class="sub">With DevTools focused, hold <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>Shift</kbd> and press a key. Needs <code>js.hotkeys</code>.</p>
+    <div class="keys">
+      <div><kbd>P</kbd> Cycle preset</div>
+      <div><kbd>A</kbd> Cycle accent</div>
+      <div><kbd>D</kbd> Toggle compact density</div>
+      <div><kbd>M</kbd> Toggle motion</div>
+      <div><kbd>H</kbd> Toggle the whole theme</div>
+      <div><kbd>O</kbd> Open this page</div>
+    </div>
+  </section>
+  <script type="module" src="chrome://halo/content/options/options.js"></script>
+</body>
+</html>

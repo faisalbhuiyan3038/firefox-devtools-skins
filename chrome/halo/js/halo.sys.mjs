@@ -68,6 +68,17 @@ const ACCENT_ORDER = ["", ...Object.keys(ACCENTS)];
 /** Presets that ship a presets/<name>.css. Ctrl+Alt+Shift+P cycles them. */
 const PRESETS = ["halo", "glass", "ember", "terminal", "daylight"];
 
+/** Each preset's own accent (mirrors presets/*.css; shown on the settings page). */
+const PRESET_ACCENTS = {
+  halo:     "light-dark(#6d4dff, #a48bff)",
+  glass:    "#8fb4ff",
+  ember:    "#ff8a3d",
+  terminal: "#6cffa0",
+  daylight: "light-dark(#2f5bff, #7b97ff)",
+};
+
+const SETTINGS_URL = "chrome://halo/content/options/options.html";
+
 const errors = [];
 function report(where, e) {
   errors.push(`${where}: ${e}`);
@@ -503,6 +514,7 @@ FEATURES.hotkeys = {
           setPref("preset", PRESETS[(i + 1) % PRESETS.length]);
           break;
         }
+        case "KeyO": openSettings(); break;
         default: handled = false;
       }
       if (handled) {
@@ -681,22 +693,60 @@ const prefObserver = {
   },
 };
 
+/* -------------------------------------------------------- settings page */
+
+function openSettings(win) {
+  win = win?.gBrowser ? win : Services.wm.getMostRecentWindow("navigator:browser");
+  if (!win) return;
+  win.switchToTabHavingURI(SETTINGS_URL, true, {
+    triggeringPrincipal: Services.scriptSecurityManager.getSystemPrincipal(),
+  });
+  win.focus();
+}
+
+/** "Halo DevTools Settings" in the browser's Tools menu (Alt shows the menu bar). */
+function addMenuItem(win) {
+  try {
+    const doc = win.document;
+    const popup = doc.getElementById("menu_ToolsPopup");
+    if (!popup || doc.getElementById("halo-menu-settings")) return;
+    const mi = doc.createXULElement("menuitem");
+    mi.id = "halo-menu-settings";
+    mi.setAttribute("label", "Halo DevTools Settings");
+    mi.addEventListener("command", () => openSettings(win));
+    popup.appendChild(mi);
+  } catch (e) {
+    report("menu", e);
+  }
+}
+
+const browserObserver = { observe: win => addMenuItem(win) };
+
 function init() {
   registerDefaults();
   Services.obs.addObserver(docObserver, "document-element-inserted");
+  Services.obs.addObserver(browserObserver, "browser-delayed-startup-finished");
   Services.prefs.addObserver(PREFIX, prefObserver);
+  for (const win of Services.wm.getEnumerator("navigator:browser")) {
+    if (win.gBrowserInit?.delayedStartupFinished) addMenuItem(win);
+  }
   scanExisting();
 }
 
 init();
 
 export const Halo = {
-  version: "1.1.0",
+  version: "1.2.0",
+  PREFIX,
   PREFS,
   PRESETS,
+  PRESET_ACCENTS,
   ACCENTS,
   errors,
   controllers,
+  settingsURL: SETTINGS_URL,
   pref,
+  setPref,
+  openSettings,
   rescan: scanExisting,
 };
